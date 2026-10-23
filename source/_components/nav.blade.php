@@ -1,48 +1,39 @@
-<header id="main-header" class="w-full sticky top-0 z-[100] bg-transparent transition-all duration-300">
-    <nav class="layout-grid py-5 justify-between items-center transition-all duration-300 relative" id="main-nav">
-        <a href="{{ $page->baseUrl }}/" class="flex items-center z-50">
-            <span class="text-ch5 text-main1">{{ $page->siteName }}</span>
+<header id="main-header" class="w-full sticky top-0 z-[100] bg-white transition-all duration-300 is-scrolled">
+    <nav class="layout-grid justify-between items-center transition-all duration-300 relative min-h-16 lg:min-h-20" id="main-nav">
+        <a href="{{ $page->baseUrl }}/" class="flex items-center z-50 shrink-0">
+            <img
+                src="{{ $page->baseUrl }}/images/logo.svg"
+                alt="{{ $page->siteName }}"
+                class="nav-logo h-7 md:h-8 w-auto"
+            >
         </a>
 
-        <button id="mobile-menu-btn" class="lg:hidden text-main1 p-2 focus:outline-none z-50 flex items-center justify-center cursor-pointer" aria-label="開啟選單">
+        <button id="mobile-menu-btn" class="lg:hidden p-2 focus:outline-none z-50 flex items-center justify-center cursor-pointer transition-colors" aria-label="開啟選單">
             <i data-lucide="menu" id="mobile-menu-icon" class="w-6 h-6"></i>
         </button>
 
         <div id="nav-menu" class="fixed lg:static top-0 right-0 max-w-full w-full sm:w-[320px] lg:w-auto h-screen max-h-[100dvh] lg:h-auto bg-white lg:bg-transparent shadow-2xl lg:shadow-none p-6 md:px-12 pt-24 pb-12 lg:p-0 flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-10 translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 overflow-y-auto lg:overflow-visible">
-            <ul class="flex flex-col lg:flex-row lg:items-center gap-0 lg:gap-7 w-full lg:w-auto">
+            <ul class="flex flex-col lg:flex-row lg:items-center gap-0 lg:gap-6 w-full lg:w-auto">
                 <li class="py-1 lg:py-0">
-                    <a href="{{ $page->baseUrl }}/about/" class="nav-link {{ $page->isActive('/about') }}">關於我們</a>
+                    <a href="{{ $page->baseUrl }}/about/" class="nav-link {{ $page->isActive('/about') }}">蘭頓精神</a>
                 </li>
                 <li class="py-1 lg:py-0">
-                    <a href="{{ $page->baseUrl }}/news/" class="nav-link {{ $page->isActive('/news') }}">最新消息</a>
-                </li>
-                <li class="relative group py-1 lg:py-0 mobile-dropdown">
-                    <a href="#" class="nav-link justify-between lg:justify-start mobile-dropdown-toggle">
-                        <span>服務項目</span>
-                        <i data-lucide="chevron-down" class="w-4 h-4 text-gray4 group-hover:text-main2 transition-transform duration-200 group-hover:rotate-180 icon-arrow"></i>
-                    </a>
-                    <div class="dropdown-menu-wrapper">
-                        <div class="dropdown-menu-inner">
-                            <div class="w-full lg:w-48 bg-gray1/60 lg:bg-white rounded-[10px] lg:shadow-lg flex flex-col overflow-hidden">
-                                <a href="{{ $page->baseUrl }}/services/" class="dropdown-item">
-                                    <span>服務項目一</span>
-                                    <i data-lucide="chevron-right" class="w-4 h-4 dropdown-item-arrow"></i>
-                                </a>
-                                <a href="{{ $page->baseUrl }}/services/" class="dropdown-item">
-                                    <span>服務項目二</span>
-                                    <i data-lucide="chevron-right" class="w-4 h-4 dropdown-item-arrow"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                    <a href="{{ $page->baseUrl }}/cooperation/" class="nav-link {{ $page->isActive('/cooperation') }}">合作方式</a>
                 </li>
                 <li class="py-1 lg:py-0">
-                    <a href="{{ $page->baseUrl }}/contact/" class="nav-link {{ $page->isActive('/contact') }}">聯絡我們</a>
+                    <a href="{{ $page->baseUrl }}/knowledge/" class="nav-link {{ $page->isActive('/knowledge') }}">床墊知識</a>
+                </li>
+                <li class="py-1 lg:py-0">
+                    <a href="{{ $page->baseUrl }}/materials/" class="nav-link {{ $page->isActive('/materials') }}">材料介紹</a>
+                </li>
+                <li class="py-1 lg:py-0">
+                    <a href="{{ $page->baseUrl }}/partners/" class="nav-link {{ $page->isActive('/partners') }}">戰略夥伴</a>
                 </li>
             </ul>
 
-            <a href="{{ $page->baseUrl }}/contact/" class="btn-primary w-full lg:w-auto justify-center">
-                <span>立即諮詢</span>
+            <a href="{{ $page->baseUrl }}/contact/" class="btn-cta w-full lg:w-44 justify-center">
+                <i data-lucide="mail" class="w-5 h-5 shrink-0"></i>
+                <span>合作洽詢</span>
             </a>
         </div>
 

@@ -42,19 +42,17 @@ const mainHeader = document.getElementById('main-header');
 const mainNav = document.getElementById('main-nav');
 
 function updateHeaderOnScroll() {
+    if (!mainHeader) {
+        return;
+    }
+
+    const overHero = mainHeader.classList.contains('is-over-hero');
     const scrolled = window.scrollY > 20;
 
-    if (mainNav) {
-        mainNav.classList.toggle('py-5', !scrolled);
-        mainNav.classList.toggle('py-3', scrolled);
-    }
-
-    if (mainHeader) {
-        mainHeader.classList.toggle('bg-transparent', !scrolled);
-        mainHeader.classList.toggle('bg-white', scrolled);
-        mainHeader.classList.toggle('shadow-md', scrolled);
-        mainHeader.classList.toggle('rounded-b-[24px]', scrolled);
-    }
+    mainHeader.classList.toggle('is-scrolled', !overHero || scrolled);
+    mainHeader.classList.toggle('bg-transparent', overHero && !scrolled);
+    mainHeader.classList.toggle('bg-white', !overHero || scrolled);
+    mainHeader.classList.toggle('shadow-md', !overHero || scrolled);
 }
 
 window.addEventListener('scroll', updateHeaderOnScroll, { passive: true });
