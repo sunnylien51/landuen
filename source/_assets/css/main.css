@@ -32,40 +32,80 @@
     @apply inline-flex items-center gap-2 px-6 py-3 bg-main1 text-white rounded-full font-medium transition-colors hover:bg-main2 cursor-pointer;
   }
 
-  .nav-link {
-    @apply relative py-1.5 lg:py-2 text-main1 font-medium transition-colors hover:text-main2 flex items-center gap-1;
+  .btn-cta {
+    @apply inline-flex items-center gap-2.5 px-8 h-16 lg:h-20 bg-main2 text-white font-serif font-semibold transition-colors hover:bg-main1 cursor-pointer;
     font-size: 16px;
-    line-height: 1.9;
-    letter-spacing: 0.06em;
+    line-height: 1.75;
+    letter-spacing: 0.05em;
+  }
+
+  /* Logo SVG 預設白色；淺底時濾成 main1，疊在深色 hero 時還原白色 */
+  .nav-logo {
+    transition: filter 0.3s ease;
+    filter: brightness(0) saturate(100%) invert(22%) sepia(24%) saturate(1400%) hue-rotate(183deg) brightness(0.95);
+  }
+
+  #main-header.is-over-hero:not(.is-scrolled) .nav-logo {
+    filter: none;
+  }
+
+  #main-header #mobile-menu-btn {
+    @apply text-main1;
+  }
+
+  #main-header.is-over-hero:not(.is-scrolled) #mobile-menu-btn {
+    @apply text-white;
+  }
+
+  .nav-link {
+    @apply relative py-1 text-cb2 text-main1 transition-colors flex items-center gap-1;
+    letter-spacing: 0.05em;
   }
 
   @screen lg {
+    #main-header.is-over-hero:not(.is-scrolled) .nav-link {
+      @apply text-white;
+    }
+
     .nav-link::after {
       content: '';
       position: absolute;
       bottom: 0;
       left: 0;
       width: 0%;
-      height: 2px;
-      background-color: theme('colors.main2');
+      height: 1px;
+      background-color: currentColor;
       transition: width 0.25s ease-in-out;
     }
 
-    .group:hover .nav-link::after,
     .nav-link:hover::after,
     .nav-link.active::after {
       width: 100%;
     }
   }
 
-  .group:hover .nav-link,
   .nav-link:hover,
-  .mobile-dropdown.active > .nav-link {
-    color: theme('colors.main2');
+  .nav-link.active {
+    @apply text-main2;
   }
 
-  .nav-link.active {
-    @apply text-main2 font-semibold;
+  @screen lg {
+    #main-header.is-over-hero:not(.is-scrolled) .nav-link:hover,
+    #main-header.is-over-hero:not(.is-scrolled) .nav-link.active {
+      @apply text-white;
+    }
+  }
+
+  /* 手機抽屜內連結維持主色 */
+  @media (max-width: 1199px) {
+    #nav-menu .nav-link {
+      @apply text-main1;
+    }
+
+    #nav-menu .nav-link:hover,
+    #nav-menu .nav-link.active {
+      @apply text-main2;
+    }
   }
 
   .dropdown-menu-wrapper {
