@@ -1,0 +1,256 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+:root {
+  --color-main1: #294B7B;
+  --color-main2: #91A4B9;
+  --color-main3: #B99E7F;
+  --color-gray5: #192B44;
+  --color-gray4: #768296;
+  --color-gray2: #CBD5E7;
+  --color-gray1: #E8EDF6;
+  --color-bg: #F2F5F8;
+  --color-overlay: #0C172B;
+  --content-bg-gradient: linear-gradient(180deg, #FFFFFF 40%, #EDF2FB 100%);
+
+  --font-sans: 'Noto Sans TC', sans-serif;
+  --font-serif: 'Noto Serif TC', serif;
+  --font-display: 'Cormorant Infant', serif;
+}
+
+@layer base {
+  .resize-animation-stopper,
+  .resize-animation-stopper * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-6 py-3 bg-main1 text-white rounded-full font-medium transition-colors hover:bg-main2 cursor-pointer;
+  }
+
+  .nav-link {
+    @apply relative py-1.5 lg:py-2 text-main1 font-medium transition-colors hover:text-main2 flex items-center gap-1;
+    font-size: 16px;
+    line-height: 1.9;
+    letter-spacing: 0.06em;
+  }
+
+  @screen lg {
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background-color: theme('colors.main2');
+      transition: width 0.25s ease-in-out;
+    }
+
+    .group:hover .nav-link::after,
+    .nav-link:hover::after,
+    .nav-link.active::after {
+      width: 100%;
+    }
+  }
+
+  .group:hover .nav-link,
+  .nav-link:hover,
+  .mobile-dropdown.active > .nav-link {
+    color: theme('colors.main2');
+  }
+
+  .nav-link.active {
+    @apply text-main2 font-semibold;
+  }
+
+  .dropdown-menu-wrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+  }
+
+  .dropdown-menu-inner {
+    overflow: hidden;
+  }
+
+  .mobile-dropdown.active > .dropdown-menu-wrapper {
+    grid-template-rows: 1fr;
+  }
+
+  @screen lg {
+    .dropdown-menu-wrapper {
+      position: absolute;
+      display: block;
+      grid-template-rows: none;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      width: auto;
+      z-index: 50;
+      transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+    }
+
+    .group:hover > .dropdown-menu-wrapper {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+
+  .dropdown-item {
+    @apply relative flex justify-between items-center pl-4 pr-3 py-2.5 text-gray4 hover:text-main1 hover:bg-bg transition-colors border-b border-gray1 last:border-b-0 font-medium;
+    font-size: 16px;
+    line-height: 1.9;
+    letter-spacing: 0.06em;
+  }
+
+  .dropdown-item-arrow {
+    color: theme('colors.main2');
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: all 0.2s ease-in-out;
+  }
+
+  .dropdown-item:hover .dropdown-item-arrow {
+    opacity: 1;
+    transform: translateX(2px);
+  }
+}
+
+@layer utilities {
+  .layout-grid {
+    display: flex;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    
+    /* 799px 以下 (預設行動版邊距) */
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+
+    /* 800px - 1199px 平板 */
+    @screen md {
+      padding-left: 3rem;
+      padding-right: 3rem;
+    }
+
+    /* 1200px 以上 桌機 */
+    @screen lg {
+      padding-left: 4.5rem;
+      padding-right: 4.5rem;
+      max-width: 1440px;
+    }
+  }
+
+  .inner-page-padding {
+    padding-top: 56px;
+    padding-bottom: 80px;
+
+    @media (min-width: 880px) {
+      padding-top: 64px;
+      padding-bottom: 96px;
+    }
+
+    @screen lg {
+      padding-top: 96px;
+      padding-bottom: 128px;
+    }
+  }
+
+  .bg-content-gradient {
+    background-image: var(--content-bg-gradient);
+  }
+
+  /* ================= Chinese Body (Noto Sans TC Medium) ================= */
+  .text-cb1 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 1.8;
+    letter-spacing: 0.06em;
+  }
+
+  .text-cb2 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.9;
+    letter-spacing: 0.06em;
+  }
+
+  .text-cb3 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.8;
+    letter-spacing: 0.06em;
+  }
+
+  /* ================= Chinese Heading ================= */
+  .text-ch3 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 36px;
+    line-height: 1.5;
+    letter-spacing: 0.08em;
+  }
+
+  .text-ch4 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 26px;
+    line-height: 1.6;
+    letter-spacing: 0.08em;
+  }
+
+  .text-ch5 {
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.7;
+    letter-spacing: 0.08em;
+  }
+
+  /* ================= English Heading (Cormorant Infant) ================= */
+  .text-eh1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 64px;
+    line-height: 1.05;
+    letter-spacing: 0.02em;
+  }
+
+  .text-eh2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+  }
+
+  .text-eh3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 1.3;
+    letter-spacing: 0.05em;
+  }
+
+  .text-eh4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 1.5;
+    letter-spacing: 0.05em;
+  }
+}
