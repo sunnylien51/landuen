@@ -4,12 +4,12 @@
     @include('_components.head')
     @stack('head')
 </head>
-<body class="bg-bg text-main1 font-sans antialiased selection:bg-main2 selection:text-white flex flex-col min-h-screen overflow-x-hidden">
+<body class="bg-bg text-main1 font-sans antialiased selection:bg-main2 selection:text-white min-h-screen">
     @include('_components.nav')
 
-    <div class="flex-grow">
+    <main class="w-full">
         @yield('body')
-    </div>
+    </main>
 
     @include('_components.footer')
 

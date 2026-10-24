@@ -1,5 +1,9 @@
-<header id="main-header" class="w-full sticky top-0 z-[100] bg-white transition-all duration-300 is-scrolled">
-    <nav class="layout-grid justify-between items-center transition-all duration-300 relative min-h-16 lg:min-h-20" id="main-nav">
+@php
+    $isHome = trim($page->getPath(), '/') === '';
+@endphp
+{{-- 全站透明疊在深色 hero／banner 上；內頁滾過 banner 後由 JS 改回白底 --}}
+<header id="main-header" class="absolute left-0 right-0 top-0 w-full z-[100] bg-transparent is-over-hero {{ $isHome ? '' : 'js-nav-over-hero' }}">
+    <nav class="nav-bar justify-between items-center transition-all duration-300 relative min-h-16 lg:min-h-20" id="main-nav">
         <a href="{{ $page->baseUrl }}/" class="flex items-center z-50 shrink-0">
             <img
                 src="{{ $page->baseUrl }}/images/logo.svg"

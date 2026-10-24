@@ -8,6 +8,13 @@ export default {
         './source/**/*.md',
         './config.php',
     ],
+    // 字級 token 一律保留，供 md:/lg: 變體與尚未用到的 class
+    safelist: [
+        {
+            pattern: /^text-(cb|ch|eb|eh)[1-5]$/,
+            variants: ['md', 'lg'],
+        },
+    ],
     theme: {
         screens: {
             'md': '800px',
@@ -28,7 +35,7 @@ export default {
             fontFamily: {
                 sans: ['Noto Sans TC', 'sans-serif'],
                 serif: ['Noto Serif TC', 'serif'],
-                display: ['Cormorant Infant', 'serif'],
+                display: ['Tenor Sans', 'sans-serif'],
             },
             backgroundImage: {
                 'content-gradient': 'linear-gradient(180deg, #FFFFFF 40%, #EDF2FB 100%)',
