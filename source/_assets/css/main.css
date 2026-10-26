@@ -128,13 +128,34 @@
     }
   }
 
-  .mit-mattress-float {
+  /* 標註進場完成後才開始漂浮，節奏比較看得出變化 */
+  .mit-mattress-float.is-floating {
     animation: mit-mattress-float 6s ease-in-out infinite;
   }
 
+  /* 標註層：明顯延遲淡入 + 上浮（約 0.5s 後才動，持續約 1.2s） */
+  .mit-intro {
+    opacity: 0;
+    transform: translate3d(0, 32px, 0) scale(0.97);
+    transition:
+      opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.5s,
+      transform 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.5s;
+  }
+
+  .mit-intro.is-inview {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .mit-mattress-float {
+    .mit-mattress-float.is-floating {
       animation: none;
+    }
+
+    .mit-intro {
+      opacity: 1;
+      transform: none;
+      transition: none;
     }
   }
 
@@ -264,6 +285,53 @@
     opacity: 1;
     transform: translateX(2px);
   }
+
+  /* ================= 合作流程 ================= */
+  .process-nav-link {
+    @apply flex items-center text-gray4 hover:text-gray5;
+    transition: color 0.4s ease;
+  }
+
+  .process-nav-link.is-active {
+    @apply text-gray5;
+  }
+
+  .process-nav-dash {
+    @apply h-px shrink-0 bg-main3;
+    width: 0;
+    margin-right: 0;
+    transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1), margin-right 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .process-nav-link.is-active .process-nav-dash {
+    width: 16px;
+    margin-right: 10px;
+  }
+
+  .process-counter {
+    height: 1em;
+    overflow: hidden;
+  }
+
+  .process-counter-strip {
+    transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+  }
+
+  /* 中線在計數器上下各斷開一段，看起來像從數字底下穿過 */
+  .process-gutter-line {
+    --gap-start: 0px;
+    --gap-end: 0px;
+    -webkit-mask-image: linear-gradient(to bottom, #000 var(--gap-start), transparent var(--gap-start), transparent var(--gap-end), #000 var(--gap-end));
+    mask-image: linear-gradient(to bottom, #000 var(--gap-start), transparent var(--gap-start), transparent var(--gap-end), #000 var(--gap-end));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .process-nav-link,
+    .process-nav-dash,
+    .process-counter-strip {
+      transition: none;
+    }
+  }
 }
 
 @layer utilities {
@@ -297,9 +365,16 @@
 
     /* 1200px 以上 桌機 */
     @screen lg {
-      padding-left: 4.5rem;
-      padding-right: 4.5rem;
+      padding-left: 5rem;
+      padding-right: 5rem;
       max-width: 1440px;
+    }
+  }
+
+  /* 合作流程：沿用左右邊距，桌機不封 1440 */
+  .layout-grid.layout-grid--fluid {
+    @screen lg {
+      max-width: none;
     }
   }
 
@@ -470,9 +545,9 @@
   }
 
   .text-ch5 {
-    font-family: var(--font-sans);
-    font-weight: 500;
-    font-size: 22px;
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 21px;
     line-height: 1.7;
     letter-spacing: 0.08em;
   }

@@ -71,7 +71,7 @@
                         </h2>
                     </div>
 
-                    <div class="relative z-10 w-full max-w-[980px]" data-mit-stage data-aos="fade-up" data-aos-delay="280">
+                    <div class="relative z-10 w-full max-w-[1200px]" data-mit-stage data-aos="fade-up" data-aos-delay="280">
                         <div
                             class="mit-watermark pointer-events-none absolute left-1/2 top-[65%] font-display text-[clamp(3rem,12vw,8.2rem)] leading-none tracking-[0.035em] select-none whitespace-nowrap will-change-transform"
                             data-mit-watermark
@@ -80,11 +80,20 @@
                             MADE IN TAIWAN
                         </div>
                         <div class="relative z-10 w-full will-change-transform" data-mit-mattress>
-                            <img
-                                src="{{ $page->baseUrl }}/images/mattress.webp"
-                                alt="MIT 台灣製造床墊"
-                                class="mit-mattress-float block w-full h-auto"
-                            >
+                            <div class="mit-mattress-float relative w-full" data-mit-float>
+                                <img
+                                    src="{{ $page->baseUrl }}/images/mattress.webp"
+                                    alt="MIT 台灣製造床墊剖面結構"
+                                    class="block w-full h-auto"
+                                >
+                                <img
+                                    src="{{ $page->baseUrl }}/images/mattress_intro.svg"
+                                    alt=""
+                                    class="mit-intro absolute inset-0 size-full object-contain pointer-events-none"
+                                    data-mit-intro
+                                    aria-hidden="true"
+                                >
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -93,33 +102,41 @@
                 <div class="w-full max-w-[1280px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-7 mt-12 lg:mt-16">
                     @php
                         $mitCards = [
-                            ['num' => '01', 'title' => '智慧智造', 'desc' => '完整產業鏈與自動化設備', 'img' => 'mit_link1.jpg'],
-                            ['num' => '02', 'title' => '人因設計', 'desc' => '對應在地風土與氣候', 'img' => 'mit_link2.jpg'],
-                            ['num' => '03', 'title' => '專業代工', 'desc' => 'OEM / ODM / OBM 戰略合作', 'img' => 'mit_link3.jpg'],
-                            ['num' => '04', 'title' => '品質永續', 'desc' => 'ISO 認證與碳足跡標籤', 'img' => 'mit_link4.jpg'],
+                            ['num' => '01', 'title' => '智慧智造', 'desc' => '完整產業鏈與自動化設備', 'img' => 'mit_link1.jpg', 'href' => '/about/manufacturing/'],
+                            ['num' => '02', 'title' => '人因設計', 'desc' => '對應在地風土與氣候', 'img' => 'mit_link2.jpg', 'href' => '/about/ergonomics/'],
+                            ['num' => '03', 'title' => '專業代工', 'desc' => 'OEM / ODM / OBM 戰略合作', 'img' => 'mit_link3.jpg', 'href' => '/about/oem/'],
+                            ['num' => '04', 'title' => '品質永續', 'desc' => 'ISO 認證與碳足跡標籤', 'img' => 'mit_link4.jpg', 'href' => '/about/quality/'],
                         ];
                     @endphp
                     @foreach ($mitCards as $i => $card)
-                        <article class="bg-white flex flex-col overflow-hidden" data-aos="fade-right" data-aos-delay="{{ $i * 100 }}">
-                            <div class="px-6 pt-8 pb-10 flex flex-col items-start gap-6">
-                                <div class="flex flex-col items-start gap-1">
-                                    <span class="text-cb3 text-main1">{{ $card['num'] }}</span>
-                                    <span class="block w-4 border-t border-main3" aria-hidden="true"></span>
+                        <a
+                            href="{{ $page->baseUrl }}{{ $card['href'] }}"
+                            class="block"
+                            data-aos="fade-right"
+                            data-aos-delay="{{ $i * 100 }}"
+                        >
+                            {{-- hover 位移放內層，避免被 AOS 的 transform 蓋掉 --}}
+                            <div class="bg-white flex flex-col overflow-hidden group transition-all duration-500 ease-out hover:-translate-y-3 hover:shadow-[0px_8px_24px_0px_rgba(25,43,68,0.14)]">
+                                <div class="px-6 pt-8 pb-10 flex flex-col items-start gap-6">
+                                    <div class="flex flex-col items-start gap-1">
+                                        <span class="text-cb3 text-main1">{{ $card['num'] }}</span>
+                                        <span class="block w-4 border-t border-main3" aria-hidden="true"></span>
+                                    </div>
+                                    <div class="w-full flex flex-col items-center gap-1 text-center">
+                                        <h3 class="text-ch4 text-main1 tracking-widest">{{ $card['title'] }}</h3>
+                                        <p class="text-cb3 text-gray4">{{ $card['desc'] }}</p>
+                                    </div>
                                 </div>
-                                <div class="w-full flex flex-col items-center gap-1 text-center">
-                                    <h3 class="text-ch4 text-main1 tracking-widest">{{ $card['title'] }}</h3>
-                                    <p class="text-cb3 text-gray4">{{ $card['desc'] }}</p>
+                                <div class="relative rounded-tr-[48px] overflow-hidden">
+                                    <img
+                                        src="{{ $page->baseUrl }}/images/{{ $card['img'] }}"
+                                        alt="{{ $card['title'] }}"
+                                        class="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105"
+                                    >
+                                    <div class="absolute inset-0 bg-gray5/10" aria-hidden="true"></div>
                                 </div>
                             </div>
-                            <div class="relative rounded-tr-[48px] overflow-hidden">
-                                <img
-                                    src="{{ $page->baseUrl }}/images/{{ $card['img'] }}"
-                                    alt="{{ $card['title'] }}"
-                                    class="w-full h-56 object-cover"
-                                >
-                                <div class="absolute inset-0 bg-gray5/10" aria-hidden="true"></div>
-                            </div>
-                        </article>
+                        </a>
                     @endforeach
                 </div>
             </div>

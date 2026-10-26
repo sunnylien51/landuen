@@ -59,9 +59,209 @@ function onReady(fn) {
     }
 }
 
+/**
+ * 合作流程左側壁掛：用 translateY（不改 overflow／不用 fixed）
+ * fixed 會被 .content-panel 的 overflow:hidden 裁切；改 overflow 又會弄壞 banner 蓋過效果。
+ */
+function initProcessAsidePin() {
+    const rail = document.querySelector('[data-process-rail]');
+    const aside = document.querySelector('[data-process-aside]');
+    if (!rail || !aside) {
+        return null;
+    }
+
+    const counter = rail.querySelector('[data-process-counter-wrap]');
+    const line = rail.querySelector('[data-process-line]');
+    const parallax = Array.from(rail.querySelectorAll('[data-process-parallax]'));
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const LG = 1200;
+    const LINE_GAP = 16;
+    // 尚未捲到可置中時，不要貼在 rail 頂邊（對齊左側 aside 的 pt-16）
+    const MIN_TOP = 64;
+
+    function updateParallax() {
+        const vh = window.innerHeight;
+        parallax.forEach((el) => {
+            if (reduceMotion.matches) {
+                el.style.transform = '';
+                return;
+            }
+            const rect = el.parentElement.getBoundingClientRect();
+            if (rect.bottom < 0 || rect.top > vh) {
+                return;
+            }
+            const progress = (vh - rect.top) / (vh + rect.height) - 0.5;
+            el.style.transform = `translate3d(0, ${(progress * -5).toFixed(2)}%, 0)`;
+        });
+    }
+
+    function pinToViewportCenter(el, railH, railTop) {
+        const elH = el.offsetHeight;
+        const elMax = Math.max(0, railH - elH);
+        const centered = window.innerHeight / 2 - elH / 2 - railTop;
+        return Math.min(Math.max(centered, MIN_TOP), elMax);
+    }
+
+    function updatePin() {
+        updateParallax();
+
+        if (window.innerWidth < LG) {
+            aside.style.transform = '';
+            if (counter) {
+                counter.style.transform = '';
+            }
+            return;
+        }
+
+        const railH = rail.offsetHeight;
+        const railTop = rail.getBoundingClientRect().top;
+
+        const asideY = pinToViewportCenter(aside, railH, railTop);
+        aside.style.transform = asideY ? `translate3d(0, ${asideY}px, 0)` : '';
+
+        if (counter) {
+            const counterY = pinToViewportCenter(counter, railH, railTop);
+            const counterH = counter.offsetHeight;
+            counter.style.transform = `translate3d(0, ${counterY}px, 0)`;
+            if (line) {
+                line.style.setProperty('--gap-start', `${counterY - LINE_GAP}px`);
+                line.style.setProperty('--gap-end', `${counterY + counterH + LINE_GAP}px`);
+            }
+        }
+    }
+
+    window.__processAsidePin = updatePin;
+    window.addEventListener('resize', updatePin);
+    updatePin();
+    return updatePin;
+}
+
+/** 合作流程：左側／手機錨點 scroll-spy + 平滑捲動 */
+function initProcessFlowNav() {
+    const root = document.querySelector('[data-process-flow]');
+    if (!root) {
+        return;
+    }
+
+    initProcessAsidePin();
+
+    const steps = Array.from(root.querySelectorAll('[data-process-step]'));
+    const links = Array.from(root.querySelectorAll('[data-process-link]'));
+    const counter = root.querySelector('[data-process-counter]');
+    if (!steps.length || !links.length) {
+        return;
+    }
+
+    function setActive(id) {
+        links.forEach((link) => {
+            link.classList.toggle('is-active', link.getAttribute('data-process-id') === id);
+        });
+
+        const index = steps.findIndex((step) => step.id === id);
+        if (counter && index >= 0) {
+            counter.style.transform = `translate3d(0, ${-index}em, 0)`;
+        }
+
+        const mobileNav = root.querySelector('[data-process-nav-mobile]');
+        const activeLink = mobileNav && mobileNav.querySelector(`[data-process-id="${id}"]`);
+        if (activeLink && mobileNav) {
+            const linkLeft = activeLink.offsetLeft;
+            const linkWidth = activeLink.offsetWidth;
+            const navWidth = mobileNav.clientWidth;
+            mobileNav.scrollTo({
+                left: linkLeft - (navWidth - linkWidth) / 2,
+                behavior: 'smooth',
+            });
+        }
+    }
+
+    let currentId = steps[0].id;
+    let scrollToken = 0;
+    let unlockTimer = 0;
+    setActive(currentId);
+
+    // 點擊當下先標示目標，平滑捲動途中不要讓經過的上一項把高亮搶回去。
+    function beginProgrammaticScroll(id) {
+        const token = ++scrollToken;
+        window.clearTimeout(unlockTimer);
+        unlockTimer = window.setTimeout(() => finishProgrammaticScroll(token, id), 1600);
+        currentId = id;
+        setActive(id);
+        return token;
+    }
+
+    function finishProgrammaticScroll(token, id) {
+        if (token !== scrollToken) {
+            return;
+        }
+        window.clearTimeout(unlockTimer);
+        scrollToken = 0;
+        currentId = id;
+        setActive(id);
+    }
+
+    function activeIdFromScroll() {
+        const line = Math.min(window.innerHeight * 0.3, 160);
+        let id = steps[0].id;
+        steps.forEach((step) => {
+            if (step.getBoundingClientRect().top <= line) {
+                id = step.id;
+            }
+        });
+        return id;
+    }
+
+    function syncFromScroll() {
+        if (scrollToken) {
+            return;
+        }
+        const id = activeIdFromScroll();
+        if (id === currentId) {
+            return;
+        }
+        currentId = id;
+        setActive(id);
+    }
+
+    links.forEach((link) => {
+        link.addEventListener('click', (e) => {
+            const id = link.getAttribute('data-process-id');
+            const target = id && document.getElementById(id);
+            if (!target) {
+                return;
+            }
+
+            e.preventDefault();
+            const token = beginProgrammaticScroll(id);
+
+            if (window.lenis) {
+                window.lenis.scrollTo(target, {
+                    offset: -96,
+                    onComplete: () => finishProgrammaticScroll(token, id),
+                });
+            } else {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                window.addEventListener(
+                    'scrollend',
+                    () => finishProgrammaticScroll(token, id),
+                    { once: true }
+                );
+            }
+
+            if (history.replaceState) {
+                history.replaceState(null, '', `#${id}`);
+            }
+        });
+    });
+
+    window.addEventListener('scroll', syncFromScroll, { passive: true });
+    syncFromScroll();
+}
+
 onReady(function () {
     initAos();
     bindAosRevealFallback();
+    initProcessFlowNav();
 
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
@@ -73,14 +273,29 @@ onReady(function () {
 
     const mitStage = document.querySelector('[data-mit-stage]');
     const mitWatermark = mitStage && mitStage.querySelector('[data-mit-watermark]');
-    if (mitStage && mitWatermark && 'IntersectionObserver' in window) {
+    const mitIntro = mitStage && mitStage.querySelector('[data-mit-intro]');
+    const mitFloat = mitStage && mitStage.querySelector('[data-mit-float]');
+    if (mitStage && 'IntersectionObserver' in window) {
         const mitObserver = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     if (!entry.isIntersecting) {
                         return;
                     }
-                    mitWatermark.classList.add('is-inview');
+                    if (mitWatermark) {
+                        mitWatermark.classList.add('is-inview');
+                    }
+                    if (mitIntro) {
+                        mitIntro.classList.add('is-inview');
+                        // 等淡入（0.5s delay + 1.2s）結束後再漂浮，比較看得出層次
+                        window.setTimeout(() => {
+                            if (mitFloat) {
+                                mitFloat.classList.add('is-floating');
+                            }
+                        }, 1800);
+                    } else if (mitFloat) {
+                        mitFloat.classList.add('is-floating');
+                    }
                     mitObserver.disconnect();
                 });
             },
@@ -97,6 +312,9 @@ window.addEventListener(
             AOS.refresh();
         }
         bindAosRevealFallback();
+        if (typeof window.__processAsidePin === 'function') {
+            window.__processAsidePin();
+        }
     },
     { once: true }
 );
@@ -225,6 +443,9 @@ function onScrollFrame() {
     updateMitParallax();
     updateFooterPinBg();
     updateInnerNavOverHero();
+    if (typeof window.__processAsidePin === 'function') {
+        window.__processAsidePin();
+    }
 }
 
 window.addEventListener('scroll', onScrollFrame, { passive: true });
