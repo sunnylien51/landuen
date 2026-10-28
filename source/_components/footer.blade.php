@@ -8,7 +8,7 @@
     --}}
     <div
         id="footer-cta"
-        class="relative z-0 w-full h-[480px] overflow-hidden -mt-[60px]"
+        class="relative z-0 w-full h-[520px] overflow-hidden -mt-[60px]"
     >
         <img
             src="{{ $page->baseUrl }}/images/banner_footer.jpg"
@@ -20,20 +20,30 @@
         <div class="absolute inset-0 bg-overlay/30" aria-hidden="true"></div>
 
         <div class="absolute inset-x-0 top-[60px] bottom-0 z-10 layout-grid flex flex-col justify-center items-center gap-8">
-            <div class="w-full flex flex-col items-center gap-3 text-center" data-aos="fade-up">
+            <div class="w-full flex flex-col items-center gap-2 text-center" data-aos="fade-up">
                 <div class="inline-flex items-center gap-3 text-eb2 text-main2 uppercase">
                     <span aria-hidden="true">/</span>
                     <span>COOPERATION</span>
                     <span aria-hidden="true">/</span>
                 </div>
-                <h2 class="text-ch3 text-white">攜手蘭頓，共創合作新可能</h2>
-                <p class="text-cb2 text-white/80">歡迎與蘭頓聯繫，一起探索合作的可能</p>
+                <h2 class="text-ch2 text-white">攜手蘭頓，開啟品牌新藍圖</h2>
+                <p class="text-cb2 text-white/80 max-w-2xl">從打樣到全球量產，以 40 年工藝成就您的市場優勢。</p>
             </div>
 
-            <a href="{{ $page->baseUrl }}/contact/" class="btn-footer-contact" data-aos="fade-up" data-aos-delay="100">
-                <span>CONTACT</span>
-                <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
-            </a>
+            <div
+                class="flex flex-row flex-wrap items-center justify-center gap-3 sm:gap-4"
+                data-aos="fade-up"
+                data-aos-delay="100"
+            >
+                <a href="{{ $page->baseUrl }}/contact/" class="btn btn--main3 h-12 pl-6 pr-5 justify-between gap-3">
+                    <span>啟動合作洽詢</span>
+                    <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+                </a>
+                <a href="{{ $page->baseUrl }}/cooperation/" class="btn-outline-light">
+                    <span>了解合作流程</span>
+                    <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+                </a>
+            </div>
         </div>
     </div>
 
@@ -76,7 +86,7 @@
             <button
                 id="back-to-top"
                 type="button"
-                class="btn-back-top shrink-0 self-end lg:self-center"
+                class="btn-outline shrink-0 self-end lg:self-center"
                 aria-label="返回頁首"
             >
                 <span>TOP</span>

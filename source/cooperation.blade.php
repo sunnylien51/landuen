@@ -102,15 +102,11 @@ description: 蘭頓企業合作方式——從需求訪談到檢驗交貨的一�
             ];
         @endphp
 
-        <section class="layout-grid layout-grid--fluid pt-10 md:pt-14 lg:pt-20 pb-20 lg:pb-36 flex flex-col gap-16 lg:gap-32" data-process-flow>
-            {{-- 導言 --}}
-            <div class="w-full flex flex-col items-center gap-5 pt-10 pb-5" data-aos="fade-up">
-                <div class="w-12 h-[3px] bg-main3" aria-hidden="true"></div>
-                <h2 class="text-ch4 text-gray5 text-center max-w-4xl">
-                    從市場需求、產品研發到智慧製造與全球物流，<br class="hidden md:inline">
-                    蘭頓提供完整的一站式床墊 OEM／ODM 代工服務。
-                </h2>
-            </div>
+        <section class="layout-grid layout-grid--fluid inner-page-padding flex flex-col gap-12 lg:gap-16" data-process-flow>
+            @include('_components.page-intro', [
+                'title' => '一站式床墊代工服務',
+                'body' => '從市場需求、產品研發到智慧製造與全球物流，蘭頓提供完整的一站式床墊 OEM／ODM 代工服務。',
+            ])
 
             {{-- 手機橫向錨點 --}}
             <nav

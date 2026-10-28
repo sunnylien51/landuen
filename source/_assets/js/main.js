@@ -260,10 +260,8 @@ function initProcessFlowNav() {
 
 /**
  * 首頁 OEM 大圖：sticky 捲動縮放
- * 進度起點：影片上緣剛進視窗（不必等置中）
- * 0→70%：960×540／圓角 20 → 100vw×100vh／圓角 0，影片色遮約 35%→100%
- * title 約 48% 起慢速淡入；body 約 58% 起慢速淡入上移
- * 70→100%：停住，解除 sticky 後繼續往下
+ * 媒體固定 100vw×100vh，以 scale 放大（避免改 width/height 重排跳動）
+ * 進度起點：視覺上影片上緣剛進視窗；0→70% 放大，70→100% 停住
  */
 function initOemZoom() {
     const root = document.querySelector('[data-oem-zoom]');
@@ -277,6 +275,9 @@ function initOemZoom() {
     const body = media.querySelector('[data-oem-zoom-body]');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const ZOOM_END = 0.7;
+    const START_W = 960;
+    const START_H = 540;
+    const START_RADIUS = 20;
 
     function clamp01(n) {
         return Math.min(1, Math.max(0, n));
@@ -294,32 +295,28 @@ function initOemZoom() {
         el.style.transform = t >= 0.999 ? 'none' : `translate3d(0, ${(1 - t) * 16}px, 0)`;
     }
 
-    function mediaStartSize() {
-        const vw = window.innerWidth || 1;
-        const startW = Math.min(960, Math.max(280, vw - 32));
-        return { startW, startH: startW * (540 / 960) };
-    }
-
     function paint(progress) {
         const vw = window.innerWidth || 1;
         const vh = window.innerHeight || 1;
-        const { startW, startH } = mediaStartSize();
+        const startW = Math.min(START_W, Math.max(280, vw - 32));
+        const startH = startW * (START_H / START_W);
         const t = clamp01(progress / ZOOM_END);
 
-        const w = startW + (vw - startW) * t;
-        const h = startH + (vh - startH) * t;
-        const r = 20 * (1 - t);
-        const o = 0.20 + 0.65 * t;
+        // 以寬為基準的 scale；視覺尺寸 ≈ startW → 100vw
+        const scale0 = startW / vw;
+        const scale = scale0 + (1 - scale0) * t;
+        // border-radius 會被 scale 一起縮小，故除以 scale 維持視覺約 20→0
+        const radius = scale > 0.001 ? (START_RADIUS * (1 - t)) / scale : 0;
+        // 滿版約 0.7（原為 1），色遮仍在、影片仍可辨
+        const o = 0.2 + 0.8 * t;
 
-        media.style.setProperty('--zoom-w', `${w}px`);
-        media.style.setProperty('--zoom-h', `${h}px`);
-        media.style.setProperty('--zoom-r', `${r}px`);
+        media.style.setProperty('--zoom-scale', String(scale));
+        media.style.setProperty('--zoom-r', `${radius}px`);
         media.style.setProperty('--zoom-o', String(o));
         if (overlay) {
             overlay.style.opacity = String(o);
         }
 
-        // 較晚開始、拉長淡入區間，文字出現更慢
         applyText(title, fadeFrom(progress, 0.48, 0.16));
         applyText(body, fadeFrom(progress, 0.58, 0.16));
     }
@@ -330,8 +327,10 @@ function initOemZoom() {
         }
 
         const vh = window.innerHeight || 1;
-        const { startH } = mediaStartSize();
-        // 影片置中於 100vh pin 時：上緣進視窗底 = root.top 為 (vh + startH) / 2
+        const vw = window.innerWidth || 1;
+        const startW = Math.min(START_W, Math.max(280, vw - 32));
+        const startH = startW * (START_H / START_W);
+        // 視覺上置中小片上緣進視窗底時開始
         const startAt = (vh + startH) / 2;
         const endTravel = root.offsetHeight - vh;
         const total = startAt + endTravel;
@@ -346,23 +345,48 @@ function initOemZoom() {
     }
 
     const video = media.querySelector('video[data-oem-zoom-image]');
-    if (video && 'IntersectionObserver' in window) {
-        const io = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        const play = video.play();
-                        if (play && typeof play.catch === 'function') {
-                            play.catch(() => {});
+    const poster = media.querySelector('[data-oem-zoom-poster]');
+    if (video) {
+        let posterHidden = false;
+        const hidePoster = () => {
+            if (posterHidden || !poster) {
+                return;
+            }
+            posterHidden = true;
+            poster.classList.add('is-hidden');
+            window.setTimeout(() => {
+                poster.setAttribute('hidden', '');
+            }, 480);
+        };
+
+        const tryHidePoster = () => {
+            if (video.readyState >= 2 && !video.paused && video.currentTime > 0.02) {
+                hidePoster();
+            }
+        };
+
+        video.addEventListener('playing', tryHidePoster);
+        video.addEventListener('timeupdate', tryHidePoster);
+
+        // 進場播放、離場暫停；有畫面後淡出封面
+        if ('IntersectionObserver' in window) {
+            const io = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            const play = video.play();
+                            if (play && typeof play.then === 'function') {
+                                play.then(tryHidePoster).catch(() => {});
+                            }
+                        } else if (!video.paused) {
+                            video.pause();
                         }
-                    } else {
-                        video.pause();
-                    }
-                });
-            },
-            { threshold: 0.15 }
-        );
-        io.observe(root);
+                    });
+                },
+                { threshold: 0.12 }
+            );
+            io.observe(root);
+        }
     }
 
     window.__updateOemZoom = updateOemZoom;
@@ -370,11 +394,184 @@ function initOemZoom() {
     updateOemZoom();
 }
 
+/**
+ * 橫向區：桌機拖曳一次只進一格；觸控靠 scroll-snap
+ */
+function initDragScroll() {
+    const THRESHOLD = 56;
+    const DRAG_MAX = 36;
+    const DRAG_FACTOR = 0.28;
+
+    document.querySelectorAll('[data-drag-scroll]').forEach((el) => {
+        const track = el.querySelector('[data-drag-scroll-track]') || el.firstElementChild;
+        const items = Array.from(el.querySelectorAll('[data-drag-scroll-item]'));
+        if (!track || !items.length) {
+            return;
+        }
+
+        let isDown = false;
+        let startX = 0;
+        let moved = false;
+        let startIndex = 0;
+
+        function maxIndex() {
+            const maxScroll = Math.max(0, el.scrollWidth - el.clientWidth);
+            let last = 0;
+            items.forEach((item, i) => {
+                if (item.offsetLeft <= maxScroll + 1) {
+                    last = i;
+                }
+            });
+            return last;
+        }
+
+        function currentIndex() {
+            const x = el.scrollLeft;
+            let best = 0;
+            let bestDist = Infinity;
+            items.forEach((item, i) => {
+                const d = Math.abs(item.offsetLeft - x);
+                if (d < bestDist) {
+                    bestDist = d;
+                    best = i;
+                }
+            });
+            return best;
+        }
+
+        function goTo(i) {
+            const next = Math.max(0, Math.min(maxIndex(), i));
+            const left = items[next].offsetLeft;
+            el.scrollTo({ left, behavior: 'smooth' });
+            return next;
+        }
+
+        function setDragOffset(dx) {
+            const capped = Math.max(-DRAG_MAX, Math.min(DRAG_MAX, dx * DRAG_FACTOR));
+            track.style.transform = capped ? `translate3d(${capped}px,0,0)` : '';
+        }
+
+        function clearDragOffset() {
+            track.style.transform = '';
+        }
+
+        el.addEventListener('pointerdown', (e) => {
+            if (e.pointerType === 'touch') {
+                return;
+            }
+            if (e.button !== 0) {
+                return;
+            }
+            isDown = true;
+            moved = false;
+            startX = e.clientX;
+            startIndex = currentIndex();
+            el.classList.add('is-dragging');
+            try {
+                el.setPointerCapture(e.pointerId);
+            } catch (_) {
+                /* ignore */
+            }
+        });
+
+        el.addEventListener('pointermove', (e) => {
+            if (!isDown) {
+                return;
+            }
+            const dx = e.clientX - startX;
+            if (Math.abs(dx) > 6) {
+                moved = true;
+            }
+            setDragOffset(dx);
+        });
+
+        function endDrag(e) {
+            if (!isDown) {
+                return;
+            }
+            const dx = e.clientX - startX;
+            isDown = false;
+            el.classList.remove('is-dragging');
+            clearDragOffset();
+
+            if (Math.abs(dx) >= THRESHOLD) {
+                goTo(startIndex + (dx < 0 ? 1 : -1));
+            } else {
+                goTo(startIndex);
+            }
+
+            if (moved) {
+                e.preventDefault();
+            }
+        }
+
+        el.addEventListener('pointerup', endDrag);
+        el.addEventListener('pointercancel', endDrag);
+
+        el.addEventListener(
+            'click',
+            (e) => {
+                if (moved) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    moved = false;
+                }
+            },
+            true
+        );
+    });
+}
+
+/**
+ * 首頁六大材料：風琴切換說明與左側圖
+ */
+function initHomeMaterials() {
+    const root = document.querySelector('[data-home-materials]');
+    if (!root) {
+        return;
+    }
+
+    const img = root.querySelector('[data-home-mat-img]');
+    const items = Array.from(root.querySelectorAll('[data-home-mat-item]'));
+    if (!img || !items.length) {
+        return;
+    }
+
+    function activate(item) {
+        items.forEach((el) => {
+            const on = el === item;
+            el.classList.toggle('is-active', on);
+            el.setAttribute('aria-expanded', on ? 'true' : 'false');
+        });
+
+        const nextSrc = item.getAttribute('data-img');
+        const nextAlt = item.getAttribute('data-alt') || '';
+        if (nextSrc && img.getAttribute('src') !== nextSrc) {
+            img.style.opacity = '0';
+            window.setTimeout(() => {
+                img.setAttribute('src', nextSrc);
+                img.setAttribute('alt', nextAlt);
+                img.style.opacity = '1';
+            }, 180);
+        }
+    }
+
+    items.forEach((item) => {
+        item.addEventListener('click', () => {
+            if (!item.classList.contains('is-active')) {
+                activate(item);
+            }
+        });
+    });
+}
+
 onReady(function () {
     initAos();
     bindAosRevealFallback();
     initProcessFlowNav();
     initOemZoom();
+    initHomeMaterials();
+    initDragScroll();
 
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();

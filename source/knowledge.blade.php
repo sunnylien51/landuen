@@ -13,7 +13,12 @@ description: 床墊知識——結構、材質與睡眠科學
     ])
 
     <div class="content-panel content-panel--plain">
-        <section class="layout-grid inner-page-padding flex flex-col gap-16 lg:gap-20">
+        <section class="layout-grid inner-page-padding flex flex-col gap-12 lg:gap-16">
+            @include('_components.page-intro', [
+                'title' => '睡眠科學與產品研發洞察',
+                'body' => '從人因力學、材料科學到法規標準，蘭頓公開 40 年頂級製床洞察，協助合作夥伴精準洞悉終端痛點，共創具備市場競爭力的睡眠產品。',
+            ])
+
             @foreach ($page->knowledgeArticles as $article)
                 <article
                     class="w-full flex flex-col lg:flex-row lg:items-start gap-8 lg:gap-16 xl:gap-20"
@@ -36,7 +41,7 @@ description: 床墊知識——結構、材質與睡眠科學
 
                             <a
                                 href="{{ $page->baseUrl }}/knowledge/{{ $article['slug'] }}/"
-                                class="btn-back-top w-40 py-[10px] justify-between pl-6 pr-5 shadow-none"
+                                class="btn-outline w-40 py-[10px] justify-between pl-6 pr-5 shadow-none"
                             >
                                 <span>閱讀全文</span>
                                 <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>

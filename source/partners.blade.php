@@ -74,7 +74,12 @@ description: 戰略夥伴——與供應鏈核心廠商共創睡眠品質
             ];
         @endphp
 
-        <section class="layout-grid inner-page-padding flex flex-col">
+        <section class="layout-grid inner-page-padding flex flex-col gap-14 lg:gap-16">
+            @include('_components.page-intro', [
+                'title' => '與供應鏈核心廠商共創睡眠品質',
+                'body' => '蘭頓攜手彈簧、布料、泡綿、膠材與自動化設備等領域夥伴，以穩定供應與專業製程，共同打造具備市場競爭力的睡眠產品。',
+            ])
+
             @foreach ($partners as $i => $partner)
                 <article
                     class="w-full flex flex-col lg:flex-row lg:items-start gap-8 lg:gap-12 py-10 md:py-12 lg:py-16 {{ $i ? 'border-t border-gray1' : '' }}"

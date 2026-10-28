@@ -23,25 +23,10 @@ description: 合作洽詢——開啟全球商機，歡迎提出多元合作或�
 
     <div class="content-panel content-panel--bg">
         <section class="layout-grid inner-page-padding flex flex-col items-center gap-12 lg:gap-16">
-            {{-- 導言 --}}
-            <div class="w-full max-w-[1000px] flex flex-col items-center gap-6" data-aos="fade-up">
-                <div class="w-full flex flex-col items-center gap-3 text-center">
-                    <div class="inline-flex items-center gap-3 text-eb2 text-main2 uppercase">
-                        <span aria-hidden="true">/</span>
-                        <span>PARTNERSHIP</span>
-                        <span aria-hidden="true">/</span>
-                    </div>
-                    <h2 class="text-ch3 text-gray5">開啟全球商機</h2>
-                </div>
-                <div class="w-12 h-0.5 bg-main3" aria-hidden="true"></div>
-                <p class="text-cb1 text-main1 text-center tracking-widest">
-                    高效對接，快速響應您的商業藍圖！
-                </p>
-                <p class="text-cb2 text-gray4 text-center">
-                    歡迎各界公司行號、跨境電商、連鎖飯店、品牌渠道商提出多元合作或戰略採購企劃。請於下方表單提供完整的合作構想，<br class="hidden md:inline">
-                    您的資料愈具體，蘭頓 B2B 專業團隊愈能以高效率為您評估最適合的產能排程與客製化解決方案。
-                </p>
-            </div>
+            @include('_components.page-intro', [
+                'title' => '開啟全球商機',
+                'body' => '歡迎各界公司行號、跨境電商、連鎖飯店、品牌渠道商提出多元合作或戰略採購企劃。請於下方表單提供完整的合作構想，您的資料愈具體，蘭頓 B2B 專業團隊愈能以高效率為您評估最適合的產能排程與客製化解決方案。',
+            ])
 
             {{-- 送出成功 --}}
             <div
@@ -56,7 +41,7 @@ description: 合作洽詢——開啟全球商機，歡迎提出多元合作或�
                 <p class="text-cb2 text-gray4 max-w-xl">
                     感謝您的來信，蘭頓 B2B 專業團隊已收到資料，將盡快與您聯繫。
                 </p>
-                <button type="button" class="btn-primary mt-2" data-partnership-reset>
+                <button type="button" class="btn mt-2" data-partnership-reset>
                     <span>再次填寫</span>
                 </button>
             </div>
@@ -220,7 +205,7 @@ description: 合作洽詢——開啟全球商機，歡迎提出多元合作或�
                     >服務條款</a>。
                 </p>
 
-                <button type="submit" class="btn-form-submit">
+                <button type="submit" class="btn h-12 w-48 justify-between pl-7 pr-6 gap-3">
                     <span>送出合作提案</span>
                     <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
                 </button>

@@ -24,8 +24,27 @@
                 {!! $slot !!}
             </article>
 
+            {{-- B2B 轉化引導模組 --}}
+            <div class="mt-8 p-8 md:p-10 bg-gray1 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-6" data-aos="fade-up">
+                <div class="flex flex-col gap-2 text-center md:text-left">
+                    <div class="inline-flex items-center justify-center md:justify-start gap-2 text-eb3 text-main3 uppercase">
+                        <span aria-hidden="true">/</span>
+                        <span>OEM • ODM SOLUTION</span>
+                        <span aria-hidden="true">/</span>
+                    </div>
+                    <h3 class="text-ch4 text-main1 tracking-wide">正在規劃具備市場說服力的高端床墊系列？</h3>
+                    <p class="text-cb2 text-gray4 max-w-xl">
+                        蘭頓提供客製化人因結構研發、高規格打樣測試與國際認證支援，為您的品牌築起技術護城河。
+                    </p>
+                </div>
+                <a href="{{ $page->baseUrl }}/contact/" class="btn shrink-0 px-7 py-3">
+                    <span>洽詢研發打樣</span>
+                    <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+                </a>
+            </div>
+
             <div class="pt-4">
-                <a href="{{ $page->baseUrl }}/knowledge/" class="btn-back-top shadow-none">
+                <a href="{{ $page->baseUrl }}/knowledge/" class="btn-outline shadow-none">
                     <i data-lucide="arrow-left" class="w-4 h-4" aria-hidden="true"></i>
                     <span>返回床墊知識</span>
                 </a>

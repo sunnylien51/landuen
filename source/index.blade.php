@@ -211,14 +211,20 @@
                             class="oem-zoom__image"
                             data-oem-zoom-image
                             src="{{ $page->baseUrl }}/images/company_video.mp4"
-                            poster="{{ $page->baseUrl }}/images/video.jpg"
                             muted
                             loop
                             playsinline
-                            autoplay
-                            preload="metadata"
+                            preload="auto"
                             aria-label="蘭頓企業智慧製造與床墊產線"
                         ></video>
+                        <img
+                            class="oem-zoom__poster"
+                            data-oem-zoom-poster
+                            src="{{ $page->baseUrl }}/images/video_index.jpg"
+                            alt=""
+                            aria-hidden="true"
+                            decoding="async"
+                        >
                         <div class="oem-zoom__overlay" data-oem-zoom-overlay aria-hidden="true"></div>
                         <div class="oem-zoom__copy">
                             <h3 class="oem-zoom__title text-eh2 lg:text-eh1 text-white/90" data-oem-zoom-title>
@@ -234,5 +240,114 @@
                 </div>
             </section>
         </div>
+    </div>
+
+    {{-- 白底下半段：底部 60px 圓角蓋住 footer（與 content-panel 同邏輯） --}}
+    @php
+        $homeMaterials = $page->materialSystems;
+        $homeMatFirst = $homeMaterials[0] ?? null;
+    @endphp
+    <div class="relative z-10 w-full bg-white rounded-b-[60px] overflow-hidden">
+    <section
+        class="relative w-full"
+        aria-labelledby="home-materials-title"
+        data-home-materials
+    >
+        <div class="layout-grid flex flex-col items-center gap-16 lg:gap-[7.5rem] py-20 lg:py-[7.5rem]">
+            <div class="w-full flex flex-col items-center gap-5 pt-10 pb-12" data-aos="fade-up">
+                <div class="w-12 h-[3px] bg-main3" aria-hidden="true"></div>
+                <h2 id="home-materials-title" class="text-ch3 text-gray5 text-center max-w-5xl">
+                    結合前沿材料科學與工業 4.0 智造，<br>
+                    蘭頓打造涵蓋六大系統的模組化材料矩陣，<br>
+                    滿足多元規格與高階代工需求，與您共創市場優勢。
+                </h2>
+            </div>
+
+            <div
+                class="w-full max-w-[1280px] flex flex-col lg:flex-row items-stretch gap-10 lg:gap-20"
+                data-aos="fade-up"
+                data-aos-delay="80"
+            >
+                <div class="w-full lg:flex-1 min-h-[20rem] lg:min-h-[36rem] overflow-hidden about-media-tr bg-gray1">
+                    <img
+                        src="{{ $page->baseUrl }}/images/{{ $homeMatFirst['img'] ?? 'process1.jpg' }}"
+                        alt="{{ $homeMatFirst['title'] ?? '' }}"
+                        class="w-full h-full object-cover transition-opacity duration-500"
+                        data-home-mat-img
+                        width="600"
+                        height="584"
+                        decoding="async"
+                    >
+                </div>
+
+                <div class="w-full lg:flex-1 flex flex-col justify-center" role="list">
+                    @foreach ($homeMaterials as $i => $mat)
+                        <button
+                            type="button"
+                            role="listitem"
+                            class="home-mat-item w-full flex items-start gap-6 md:gap-8 py-5 md:py-6 border-b border-main1/20 text-left {{ $i === 0 ? 'is-active border-t' : '' }}"
+                            data-home-mat-item
+                            data-img="{{ $page->baseUrl }}/images/{{ $mat['img'] }}"
+                            data-alt="{{ $mat['title'] }}"
+                            aria-expanded="{{ $i === 0 ? 'true' : 'false' }}"
+                        >
+                            <span class="text-eh4 text-main1 shrink-0 pt-0.5" aria-hidden="true">{{ $mat['num'] }}</span>
+                            <span class="flex-1 min-w-0 flex flex-col items-stretch">
+                                <span class="w-full flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+                                    <span class="text-ch4 text-main1 tracking-wide">{{ $mat['title'] }}</span>
+                                    <span class="text-eb3 text-main1/60 tracking-wider whitespace-nowrap">( {{ $mat['en'] }} )</span>
+                                </span>
+                                <span class="home-mat-item__panel" data-home-mat-panel>
+                                    <span class="home-mat-item__panel-inner">
+                                        <span class="home-mat-item__body text-cb2 text-main1/75 pt-2.5 block">
+                                            {{ $mat['intro'] }}
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+                        </button>
+                    @endforeach
+
+                    <div class="pt-8">
+                        <a href="{{ $page->baseUrl }}/materials/" class="btn-outline w-44 py-[10px] justify-between pl-6 pr-5 shadow-none">
+                            <span>材料介紹</span>
+                            <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- 戰略夥伴 logo 列（純 logo，點進夥伴頁） --}}
+    <section class="relative w-full" aria-label="戰略夥伴">
+        <div class="layout-grid pb-20 lg:pb-[7.5rem] pt-4 lg:pt-8">
+            <div
+                class="home-partners-scroll w-full overflow-x-auto cursor-grab select-none"
+                data-drag-scroll
+                data-aos="fade-up"
+            >
+                <div class="home-partners-scroll__track min-w-max flex items-center gap-5 md:gap-6 lg:gap-8" data-drag-scroll-track>
+                    @for ($pi = 1; $pi <= 8; $pi++)
+                        <a
+                            href="{{ $page->baseUrl }}/partners/"
+                            class="home-partners-scroll__item shrink-0 block w-36 md:w-40 lg:w-[200px] h-16 lg:h-20"
+                            data-drag-scroll-item
+                            aria-label="戰略夥伴 {{ $pi }}"
+                        >
+                            <img
+                                src="{{ $page->baseUrl }}/images/partner{{ $pi }}.jpg"
+                                alt=""
+                                class="w-full h-full object-contain mix-blend-luminosity pointer-events-none"
+                                loading="lazy"
+                                decoding="async"
+                                draggable="false"
+                            >
+                        </a>
+                    @endfor
+                </div>
+            </div>
+        </div>
+    </section>
     </div>
 @endsection
