@@ -258,10 +258,123 @@ function initProcessFlowNav() {
     syncFromScroll();
 }
 
+/**
+ * 首頁 OEM 大圖：sticky 捲動縮放
+ * 進度起點：影片上緣剛進視窗（不必等置中）
+ * 0→70%：960×540／圓角 20 → 100vw×100vh／圓角 0，影片色遮約 35%→100%
+ * title 約 48% 起慢速淡入；body 約 58% 起慢速淡入上移
+ * 70→100%：停住，解除 sticky 後繼續往下
+ */
+function initOemZoom() {
+    const root = document.querySelector('[data-oem-zoom]');
+    const media = root && root.querySelector('[data-oem-zoom-media]');
+    if (!root || !media) {
+        return;
+    }
+
+    const overlay = media.querySelector('[data-oem-zoom-overlay]');
+    const title = media.querySelector('[data-oem-zoom-title]');
+    const body = media.querySelector('[data-oem-zoom-body]');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const ZOOM_END = 0.7;
+
+    function clamp01(n) {
+        return Math.min(1, Math.max(0, n));
+    }
+
+    function fadeFrom(progress, start, dur = 0.16) {
+        return clamp01((progress - start) / dur);
+    }
+
+    function applyText(el, t) {
+        if (!el) {
+            return;
+        }
+        el.style.opacity = String(t);
+        el.style.transform = t >= 0.999 ? 'none' : `translate3d(0, ${(1 - t) * 16}px, 0)`;
+    }
+
+    function mediaStartSize() {
+        const vw = window.innerWidth || 1;
+        const startW = Math.min(960, Math.max(280, vw - 32));
+        return { startW, startH: startW * (540 / 960) };
+    }
+
+    function paint(progress) {
+        const vw = window.innerWidth || 1;
+        const vh = window.innerHeight || 1;
+        const { startW, startH } = mediaStartSize();
+        const t = clamp01(progress / ZOOM_END);
+
+        const w = startW + (vw - startW) * t;
+        const h = startH + (vh - startH) * t;
+        const r = 20 * (1 - t);
+        const o = 0.20 + 0.65 * t;
+
+        media.style.setProperty('--zoom-w', `${w}px`);
+        media.style.setProperty('--zoom-h', `${h}px`);
+        media.style.setProperty('--zoom-r', `${r}px`);
+        media.style.setProperty('--zoom-o', String(o));
+        if (overlay) {
+            overlay.style.opacity = String(o);
+        }
+
+        // 較晚開始、拉長淡入區間，文字出現更慢
+        applyText(title, fadeFrom(progress, 0.48, 0.16));
+        applyText(body, fadeFrom(progress, 0.58, 0.16));
+    }
+
+    function updateOemZoom() {
+        if (reduceMotion.matches) {
+            return;
+        }
+
+        const vh = window.innerHeight || 1;
+        const { startH } = mediaStartSize();
+        // 影片置中於 100vh pin 時：上緣進視窗底 = root.top 為 (vh + startH) / 2
+        const startAt = (vh + startH) / 2;
+        const endTravel = root.offsetHeight - vh;
+        const total = startAt + endTravel;
+        if (total <= 0) {
+            paint(1);
+            return;
+        }
+
+        const top = root.getBoundingClientRect().top;
+        const progress = clamp01((startAt - top) / total);
+        paint(progress);
+    }
+
+    const video = media.querySelector('video[data-oem-zoom-image]');
+    if (video && 'IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const play = video.play();
+                        if (play && typeof play.catch === 'function') {
+                            play.catch(() => {});
+                        }
+                    } else {
+                        video.pause();
+                    }
+                });
+            },
+            { threshold: 0.15 }
+        );
+        io.observe(root);
+    }
+
+    window.__updateOemZoom = updateOemZoom;
+    window.addEventListener('resize', updateOemZoom, { passive: true });
+    updateOemZoom();
+}
+
 onReady(function () {
     initAos();
     bindAosRevealFallback();
     initProcessFlowNav();
+    initOemZoom();
 
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
@@ -443,6 +556,9 @@ function onScrollFrame() {
     updateMitParallax();
     updateFooterPinBg();
     updateInnerNavOverHero();
+    if (typeof window.__updateOemZoom === 'function') {
+        window.__updateOemZoom();
+    }
     if (typeof window.__processAsidePin === 'function') {
         window.__processAsidePin();
     }
@@ -568,3 +684,76 @@ document.querySelectorAll('.mobile-dropdown-toggle').forEach((toggle) => {
         }
     });
 });
+
+/** 合作洽詢表單：驗證後送 Netlify Forms，並切換成功狀態 */
+const partnershipForm = document.getElementById('partnership-form');
+const partnershipSuccess = document.getElementById('partnership-success');
+
+function showPartnershipSuccess() {
+    if (!partnershipForm || !partnershipSuccess) {
+        return;
+    }
+
+    partnershipForm.classList.add('hidden');
+    partnershipSuccess.classList.remove('hidden');
+    partnershipSuccess.classList.add('flex');
+
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+
+    partnershipSuccess.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function resetPartnershipForm() {
+    if (!partnershipForm || !partnershipSuccess) {
+        return;
+    }
+
+    partnershipSuccess.classList.add('hidden');
+    partnershipSuccess.classList.remove('flex');
+    partnershipForm.classList.remove('hidden');
+    partnershipForm.reset();
+    partnershipForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+if (partnershipForm) {
+    partnershipForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        if (!partnershipForm.checkValidity()) {
+            partnershipForm.reportValidity();
+            return;
+        }
+
+        const submitBtn = partnershipForm.querySelector('[type="submit"]');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+        }
+
+        const body = new URLSearchParams(new FormData(partnershipForm)).toString();
+
+        try {
+            await fetch(partnershipForm.getAttribute('action') || window.location.pathname, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body,
+            });
+        } catch (_) {
+            // 本機預覽無 Netlify 時仍顯示成功狀態
+        }
+
+        showPartnershipSuccess();
+        partnershipForm.reset();
+
+        if (submitBtn) {
+            submitBtn.disabled = false;
+        }
+    });
+}
+
+if (partnershipSuccess) {
+    partnershipSuccess.querySelectorAll('[data-partnership-reset]').forEach((el) => {
+        el.addEventListener('click', resetPartnershipForm);
+    });
+}

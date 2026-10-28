@@ -142,74 +142,97 @@
             </div>
         </div>
 
-        {{-- OEM 三軌：arc 延續上一區淺色，絕對定位在本區最上方 --}}
-        <div class="relative z-10 w-full bg-gray5 rounded-b-[60px] overflow-hidden pb-20 lg:pb-28 flex flex-col items-center gap-10 lg:gap-12">
-            <div class="absolute top-0 left-0 w-full leading-none pointer-events-none z-0" aria-hidden="true">
-                <img
-                    src="{{ $page->baseUrl }}/images/arc.svg"
-                    alt=""
-                    class="block w-full h-auto select-none"
-                >
-            </div>
+        {{-- OEM：三軌＋大圖縮放共用一張底圖（勿加 overflow-hidden，以免打斷 sticky） --}}
+        <div class="relative z-10 w-full rounded-b-[60px]">
+            <img
+                src="{{ $page->baseUrl }}/images/bg_oem.webp"
+                alt=""
+                class="absolute inset-0 size-full object-cover object-center"
+                aria-hidden="true"
+            >
+            <div class="oem-bg-overlay absolute inset-0 z-[1]" aria-hidden="true"></div>
 
-            <div class="layout-grid relative z-10 w-full flex flex-col items-center gap-10 lg:gap-12 pt-[clamp(5rem,12vw,8.5rem)]">
-                <div class="w-full flex flex-col items-center gap-3 text-center" data-aos="fade-up">
-                    <div class="inline-flex items-center gap-3 text-eb2 text-main2">
-                        <span aria-hidden="true">/</span>
-                        <span>OEM • ODM • OBM STRATEGY</span>
-                        <span aria-hidden="true">/</span>
-                    </div>
-                    <h2 class="text-ch3 text-white">OEM ｜ ODM ｜ OBM 三軌佈局</h2>
+            <div class="relative z-10 w-full flex flex-col items-center gap-16 lg:gap-28">
+                <div class="absolute top-0 left-0 w-full leading-none pointer-events-none z-[2]" aria-hidden="true">
+                    <img
+                        src="{{ $page->baseUrl }}/images/arc.svg"
+                        alt=""
+                        class="block w-full h-auto select-none"
+                    >
                 </div>
 
-                <p class="w-full max-w-[615px] text-center text-cb2 text-white" data-aos="fade-up" data-aos-delay="80">
-                    依托 40 年國際大廠服務經驗與工業 4.0 彈性智造，蘭頓企業為全球家具品牌、連鎖通路與跨境電商提供全方位、高靈活度的戰略代工與共創解決方案。
-                </p>
-
-                <div class="w-full max-w-[1000px] flex flex-col gap-3" data-aos="fade-up" data-aos-delay="120">
-                    @php
-                        $tracks = [
-                            ['icon' => 'factory', 'title' => 'OEM 精準代工', 'desc' => '依托自動化智能生產線與嚴格的 SOP 產程管控，提供大規模產能開發與穩定交期。'],
-                            ['icon' => 'pencil-ruler', 'title' => 'ODM 研發設計', 'desc' => '結合前沿人因工學數據與國際材料科學，支援少量高精度打樣，量身打造創新產品。'],
-                            ['icon' => 'sparkles', 'title' => 'OBM 品牌共創', 'desc' => '反哺數十年頂級製床經驗，協助新創與通路快速建立高品質的自有睡眠品牌。'],
-                        ];
-                    @endphp
-                    @foreach ($tracks as $track)
-                        <div class="w-full pl-5 pr-6 md:pr-10 py-5 bg-white rounded-full flex flex-col md:flex-row md:items-center gap-4">
-                            <div class="w-full md:w-56 flex items-center gap-4 shrink-0">
-                                <div class="size-12 bg-gray1 rounded-3xl flex justify-center items-center text-main1 shrink-0">
-                                    <i data-lucide="{{ $track['icon'] }}" class="w-6 h-6"></i>
-                                </div>
-                                <span class="text-cb1 font-bold text-main1">{{ $track['title'] }}</span>
-                            </div>
-                            <div class="hidden md:block w-px h-4 bg-gray2 shrink-0" aria-hidden="true"></div>
-                            <p class="flex-1 text-cb2 text-gray4">{{ $track['desc'] }}</p>
+                <div class="layout-grid relative z-10 w-full flex flex-col items-center gap-10 lg:gap-12 pt-[clamp(5rem,12vw,8.5rem)]">
+                    <div class="w-full flex flex-col items-center gap-3 text-center" data-aos="fade-up">
+                        <div class="inline-flex items-center gap-3 text-eb2 text-main2">
+                            <span aria-hidden="true">/</span>
+                            <span>OEM • ODM • OBM STRATEGY</span>
+                            <span aria-hidden="true">/</span>
                         </div>
-                    @endforeach
+                        <h2 class="text-ch3 text-white">OEM ｜ ODM ｜ OBM 三軌佈局</h2>
+                    </div>
+
+                    <p class="w-full max-w-[615px] text-center text-cb2 text-white" data-aos="fade-up" data-aos-delay="80">
+                        依托 40 年國際大廠服務經驗與工業 4.0 彈性智造，蘭頓企業為全球家具品牌、連鎖通路與跨境電商提供全方位、高靈活度的戰略代工與共創解決方案。
+                    </p>
+
+                    <div class="w-full max-w-[1000px] flex flex-col gap-3" data-aos="fade-up" data-aos-delay="120">
+                        @php
+                            $tracks = [
+                                ['icon' => 'factory', 'title' => 'OEM 精準代工', 'desc' => '依托自動化智能生產線與嚴格的 SOP 產程管控，提供大規模產能開發與穩定交期。'],
+                                ['icon' => 'pencil-ruler', 'title' => 'ODM 研發設計', 'desc' => '結合前沿人因工學數據與國際材料科學，支援少量高精度打樣，量身打造創新產品。'],
+                                ['icon' => 'sparkles', 'title' => 'OBM 品牌共創', 'desc' => '反哺數十年頂級製床經驗，協助新創與通路快速建立高品質的自有睡眠品牌。'],
+                            ];
+                        @endphp
+                        @foreach ($tracks as $track)
+                            <div class="w-full pl-5 pr-6 md:pr-10 py-5 bg-white rounded-full flex flex-col md:flex-row md:items-center gap-4">
+                                <div class="w-full md:w-56 flex items-center gap-4 shrink-0">
+                                    <div class="size-12 bg-gray1 rounded-3xl flex justify-center items-center text-main1 shrink-0">
+                                        <i data-lucide="{{ $track['icon'] }}" class="w-6 h-6"></i>
+                                    </div>
+                                    <span class="text-cb1 font-bold text-main1">{{ $track['title'] }}</span>
+                                </div>
+                                <div class="hidden md:block w-px h-4 bg-gray2 shrink-0" aria-hidden="true"></div>
+                                <p class="flex-1 text-cb2 text-gray4">{{ $track['desc'] }}</p>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
             </div>
 
-            {{-- 示意圖列 --}}
-            <div class="w-full pt-16 lg:pt-20 flex justify-center items-start gap-3 md:gap-5 overflow-hidden px-4" data-aos="fade-up">
-                @php
-                    $gallery = [
-                        ['src' => 'process1.jpg', 'class' => 'w-28 md:w-44'],
-                        ['src' => 'process3.jpg', 'class' => 'w-40 md:w-60'],
-                        ['src' => 'main2.jpg', 'class' => 'w-56 md:w-[560px]'],
-                        ['src' => 'process5.jpg', 'class' => 'w-40 md:w-60'],
-                        ['src' => 'process7.jpg', 'class' => 'w-28 md:w-44'],
-                    ];
-                @endphp
-                @foreach ($gallery as $shot)
-                    <div class="{{ $shot['class'] }} h-64 md:h-96 shrink-0 rounded-sm overflow-hidden bg-gray1">
-                        <img
-                            src="{{ $page->baseUrl }}/images/{{ $shot['src'] }}"
-                            alt=""
-                            class="size-full object-cover"
-                        >
+            {{-- OEM 大圖：250vh sticky 縮放，0→70% 放大，70→100% 停住後解除 --}}
+            <section
+                class="oem-zoom relative z-10 w-full"
+                data-oem-zoom
+                aria-label="蘭頓智造場景"
+            >
+                <div class="oem-zoom__pin sticky top-0 h-[100vh] w-full flex items-center justify-center">
+                    <div class="oem-zoom__media" data-oem-zoom-media>
+                        <video
+                            class="oem-zoom__image"
+                            data-oem-zoom-image
+                            src="{{ $page->baseUrl }}/images/company_video.mp4"
+                            poster="{{ $page->baseUrl }}/images/video.jpg"
+                            muted
+                            loop
+                            playsinline
+                            autoplay
+                            preload="metadata"
+                            aria-label="蘭頓企業智慧製造與床墊產線"
+                        ></video>
+                        <div class="oem-zoom__overlay" data-oem-zoom-overlay aria-hidden="true"></div>
+                        <div class="oem-zoom__copy">
+                            <h3 class="oem-zoom__title text-eh2 lg:text-eh1 text-white/90" data-oem-zoom-title>
+                                Made in Taiwan,<br>Built for Your Brand
+                            </h3>
+                            <p class="oem-zoom__body text-cb1 text-white/80" data-oem-zoom-body>
+                                蘭頓深耕台灣四十載的頂級製床工藝，<br>
+                                從源頭精準優化成本與穩定交期，<br>
+                                以強悍的智造實力全方位賦能您的專屬品牌。
+                            </p>
+                        </div>
                     </div>
-                @endforeach
-            </div>
+                </div>
+            </section>
         </div>
     </div>
 @endsection

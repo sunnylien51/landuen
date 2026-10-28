@@ -93,6 +93,59 @@
     @apply inline-flex items-center gap-2 px-5 py-3 rounded-full border border-main2 text-main2 font-semibold text-cb3 shadow-[0px_4px_12px_0px_rgba(0,0,0,0.10)] transition-colors hover:bg-main2 hover:text-white cursor-pointer;
   }
 
+  .btn-outline {
+    @apply inline-flex items-center gap-2 px-8 py-2.5 rounded-full bg-main2 text-white font-semibold text-cb3 transition-colors duration-300 hover:bg-main1 cursor-pointer;
+  }
+
+  .btn-form-submit {
+    @apply inline-flex items-center justify-between gap-3 w-48 h-12 pl-7 pr-6 bg-main1 text-white rounded-full text-cb2 transition-colors hover:bg-main2 cursor-pointer;
+  }
+
+  /* 合作洽詢表單（對齊既有色票／字級 token） */
+  .form-field {
+    @apply self-stretch flex flex-col justify-center items-start gap-1.5 py-2;
+  }
+
+  .form-field--textarea {
+    @apply py-2;
+  }
+
+  .form-label {
+    @apply inline-flex items-center text-cb2 text-gray5;
+  }
+
+  .form-required {
+    @apply text-main3;
+  }
+
+  .form-control {
+    @apply w-full h-12 px-4 bg-white rounded-[3px] border border-gray2 text-cb2 text-gray5 transition-colors;
+  }
+
+  .form-control::placeholder {
+    @apply text-gray4;
+  }
+
+  .form-control:focus {
+    @apply outline-none border-main1;
+  }
+
+  textarea.form-control {
+    @apply h-28 py-4 resize-y;
+  }
+
+  .form-select-wrap {
+    @apply relative w-full;
+  }
+
+  .form-select {
+    @apply appearance-none pr-10 cursor-pointer;
+  }
+
+  .form-select-icon {
+    @apply pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray4;
+  }
+
   #home-hero-motion,
   #page-banner-motion {
     transform: translate3d(0, 0, 0);
@@ -332,6 +385,72 @@
       transition: none;
     }
   }
+
+  /* ================= 床墊知識富文本 ================= */
+  .knowledge-richtext {
+    @apply flex flex-col;
+  }
+
+  .knowledge-richtext > h2 {
+    @apply text-ch4 text-gray5 pt-10 pb-4 mt-10 border-t border-gray1;
+  }
+
+  .knowledge-richtext > h2:first-child {
+    @apply border-t-0 pt-0 mt-0;
+  }
+
+  .knowledge-richtext > h3 {
+    @apply text-[20px] font-medium font-sans tracking-widest text-gray5 pt-5;
+  }
+
+  .knowledge-richtext > p {
+    @apply text-cb2 text-gray4;
+  }
+
+  .knowledge-richtext > ul {
+    @apply flex flex-col gap-2 list-disc pl-5;
+  }
+
+  .knowledge-richtext > ul > li {
+    @apply text-cb2 text-gray4;
+  }
+
+  .knowledge-callout {
+    @apply flex flex-col gap-1.5 mt-6 p-5 md:p-6 border-l-[3px] border-main2;
+    background-image: linear-gradient(90deg, var(--color-bg) 0%, rgba(242, 245, 248, 0) 100%);
+  }
+
+  .knowledge-callout:not(:has(+ .knowledge-callout)) {
+    @apply mb-6;
+  }
+
+  .knowledge-callout > p:first-child {
+    @apply text-cb1 text-gray5;
+  }
+
+  .knowledge-callout > p:last-child {
+    @apply text-cb2 text-gray4;
+  }
+
+  .knowledge-table-wrap {
+    @apply w-full overflow-x-auto -mx-1 px-1 mb-6 mt-6;
+  }
+
+  .knowledge-table {
+    @apply w-full min-w-[40rem] text-left border-collapse;
+  }
+
+  .knowledge-table th {
+    @apply text-cb3 text-gray5 bg-gray1 px-4 py-3 font-medium align-bottom;
+  }
+
+  .knowledge-table td {
+    @apply text-cb3 text-gray4 px-4 py-4 border-b border-gray1 align-top;
+  }
+
+  .knowledge-table tr:last-child td {
+    @apply border-b-0;
+  }
 }
 
 @layer utilities {
@@ -463,16 +582,26 @@
   }
 
   /* 中段面板：上下倒圓角，蓋住 banner／footer 各 60px */
-  .content-panel {
-    position: relative;
-    z-index: 10;
-    width: 100%;
-    margin-top: -60px;
-    border-radius: 60px;
-    background-image: var(--content-bg-gradient);
-    box-shadow: 0 -24px 64px rgba(12, 23, 43, 0.18);
-    overflow: hidden;
-  }
+ .content-panel {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  margin-top: -60px;
+  border-radius: 60px;
+  background-image: var(--content-bg-gradient);
+  box-shadow: 0 -24px 64px rgba(12, 23, 43, 0.18);
+  overflow: hidden;
+}
+.content-panel--plain {
+  background-image: none;
+  background-color: #fff;
+}
+
+.content-panel--bg {
+  background-image: none;
+  background-color: var(--color-bg);
+}
+
 
   .about-num {
     @apply size-9 shrink-0 rounded-2xl border border-main2 flex items-center justify-center text-main2;
@@ -505,7 +634,7 @@
   /* ================= Chinese Body (Noto Sans TC Medium) ================= */
   .text-cb1 {
     font-family: var(--font-sans);
-    font-weight: 500;
+    font-weight: 600;
     font-size: 18px;
     line-height: 1.8;
     letter-spacing: 0.06em;
@@ -515,7 +644,7 @@
     font-family: var(--font-sans);
     font-weight: 500;
     font-size: 16px;
-    line-height: 1.9;
+    line-height: 1.95;
     letter-spacing: 0.06em;
   }
 
@@ -524,7 +653,7 @@
     font-weight: 500;
     font-size: 14px;
     line-height: 1.8;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.12em;
   }
 
   /* ================= Chinese Heading ================= */
@@ -545,11 +674,11 @@
   }
 
   .text-ch5 {
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
     font-weight: 600;
     font-size: 21px;
     line-height: 1.7;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.16em;
   }
 
   /* ================= English Body (Tenor Sans；僅 400) ================= */
@@ -608,5 +737,124 @@
     font-size: 24px;
     line-height: 1.5;
     letter-spacing: 0.05em;
+  }
+
+  /* OEM 區塊色遮：main1 75% → 100% */
+  .oem-bg-overlay {
+    background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-main1) 90%, transparent) 0%,
+    color-mix(in srgb, var(--color-main1) 75%, transparent) 35%,
+    color-mix(in srgb, var(--color-gray1) 80%, transparent) 45%,
+    var(--color-gray1) 100%
+  );
+  }
+
+  /* OEM 大圖 sticky 縮放：尺寸／圓角／overlay 由 JS 寫入 CSS 變數 */
+  .oem-zoom {
+    height: 250vh;
+  }
+
+  .oem-zoom__media {
+    --zoom-w: 1080px;
+    --zoom-h: 608px;
+    --zoom-r: 20px;
+    --zoom-o: 0.35;
+    position: relative;
+    width: min(var(--zoom-w), 100vw);
+    height: var(--zoom-h);
+    max-width: 100vw;
+    max-height: 100vh;
+    border-radius: var(--zoom-r);
+    overflow: hidden;
+    will-change: width, height, border-radius;
+  }
+
+  .oem-zoom__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    pointer-events: none;
+    -webkit-user-drag: none;
+  }
+
+  video.oem-zoom__image {
+    background-color: var(--color-gray5);
+  }
+
+  /* 影片色遮：淡 main1（與區塊同色系），深淺由 --zoom-o 控制 */
+  .oem-zoom__overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: var(--zoom-o);
+    background-image: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-main1) 75%, transparent) 0%,
+      var(--color-main1) 100%
+    );
+    will-change: opacity;
+  }
+
+  .oem-zoom__copy {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+    padding: 1.5rem;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .oem-zoom__title,
+  .oem-zoom__body {
+    margin: 0;
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+    will-change: opacity, transform;
+  }
+
+  .oem-zoom__title {
+    max-width: 62.5rem;
+  }
+
+  .oem-zoom__body {
+    max-width: 62.5rem;
+    width: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .oem-zoom {
+      height: auto;
+    }
+
+    .oem-zoom__pin {
+      position: relative;
+      height: auto;
+      min-height: 100vh;
+      padding-block: 3rem;
+    }
+
+    .oem-zoom__media {
+      width: min(960px, calc(100vw - 2rem));
+      height: min(540px, 56vw);
+      border-radius: 20px;
+    }
+
+    .oem-zoom__overlay {
+      opacity: 1;
+    }
+
+    .oem-zoom__title,
+    .oem-zoom__body {
+      opacity: 1;
+      transform: none;
+    }
   }
 }

@@ -163,7 +163,7 @@ description: 蘭頓企業合作方式——從需求訪談到檢驗交貨的一�
                 <div class="hidden lg:flex relative w-32 min-[1440px]:w-48 shrink-0 justify-center" aria-hidden="true">
                     <span class="process-gutter-line absolute inset-y-0 left-1/2 w-px bg-gray1" data-process-line></span>
                     <div class="h-fit flex flex-col items-center gap-3 will-change-transform" data-process-counter-wrap>
-                        <div class="process-counter text-eh1 leading-none text-gray2">
+                        <div class="process-counter font-display text-[72px] text-center leading-none text-gray2">
                             <div class="process-counter-strip" data-process-counter>
                                 @foreach ($steps as $step)
                                     <div class="h-[1em]">{{ $step['num'] }}</div>
