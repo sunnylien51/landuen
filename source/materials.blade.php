@@ -23,28 +23,31 @@ description: 蘭頓床墊材料介紹——布料、泡綿、彈簧、乳膠、�
                 'body' => '從表布、支撐層到黏合工藝，蘭頓整合六大材料系統，為每張床墊打下舒適與耐久的基礎。',
             ])
 
-            {{-- 手機橫向錨點 --}}
-            <nav
-                class="lg:hidden -mx-6 md:-mx-12 px-6 md:px-12 sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-gray2 overflow-x-auto"
-                aria-label="材料系統"
-                data-process-nav-mobile
-            >
-                <ul class="flex items-center gap-1 min-w-max py-3">
-                    @foreach ($systems as $system)
-                        <li>
-                            <a
-                                href="#{{ $system['id'] }}"
-                                data-process-link
-                                data-process-id="{{ $system['id'] }}"
-                                class="process-nav-link px-3 py-1.5 text-cb3 whitespace-nowrap"
-                            >
-                                <span class="process-nav-dash" aria-hidden="true"></span>
-                                <span>{{ $system['title'] }}</span>
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
-            </nav>
+            {{-- 手機橫向錨點（translateY 置頂；content-panel overflow 無法用 sticky） --}}
+            <div class="lg:hidden -mx-6 md:-mx-12" data-process-nav-mobile-wrap>
+                <nav
+                    class="process-nav-mobile relative hide-scrollbar z-20 bg-white/95 backdrop-blur-sm overflow-x-auto px-6 md:px-12 will-change-transform"
+                    aria-label="材料系統"
+                    data-process-nav-mobile
+                    data-drag-scroll="free"
+                >
+                    <ul class="flex items-center gap-1 min-w-max py-3">
+                        @foreach ($systems as $system)
+                            <li class="shrink-0" data-drag-scroll-item>
+                                <a
+                                    href="#{{ $system['id'] }}"
+                                    data-process-link
+                                    data-process-id="{{ $system['id'] }}"
+                                    class="process-nav-link px-3 py-1.5 text-cb3 whitespace-nowrap"
+                                >
+                                    <span class="process-nav-dash" aria-hidden="true"></span>
+                                    <span>{{ $system['title'] }}</span>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </nav>
+            </div>
 
             <div class="w-full flex border-t border-gray1" data-process-rail>
                 <div class="hidden lg:block w-52 shrink-0">

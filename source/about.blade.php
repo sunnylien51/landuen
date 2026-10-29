@@ -1,6 +1,6 @@
 ---
-title: 蘭頓精神
-description: 蘭頓精神——MIT 台灣製造與品質安心
+title: 企業理念
+description: 企業理念——40 載踏實匠心與現代睡眠科學
 ---
 @extends('_layouts.main')
 
@@ -9,7 +9,7 @@ description: 蘭頓精神——MIT 台灣製造與品質安心
         'enTitle' => 'ABOUT',
         'crumbs' => [
             ['name' => '關於蘭頓'],
-            ['name' => 'MIT精神'],
+            ['name' => '企業理念'],
         ],
     ])
 
@@ -17,242 +17,194 @@ description: 蘭頓精神——MIT 台灣製造與品質安心
         @include('_components.about-subnav', ['active' => 'mit'])
 
         <div class="layout-grid pt-10 md:pt-14 pb-20 lg:pb-36 flex flex-col gap-20 lg:gap-[130px]">
-            {{-- MIT 台灣製造 --}}
-            <section class="w-full flex flex-col gap-12 lg:gap-16" data-aos="fade-up">
-                <div class="w-full flex flex-col lg:flex-row lg:items-center gap-10 lg:gap-20">
-                    <div class="flex-1 flex flex-col gap-6 lg:gap-8 min-w-0">
-                        <div class="flex flex-col gap-3">
-                            <div class="inline-flex items-center gap-3 text-eb2 text-main2 uppercase">
-                                <span aria-hidden="true">/</span>
-                                <span>MADE IN TAIWAN</span>
-                                <span aria-hidden="true">/</span>
-                            </div>
-                            <h2 class="text-ch3 text-gray5">
-                                MIT 台灣製造<br>
-                                智慧智造 <span class="text-main2">×</span> 品質安心
+            {{-- 1. 開篇・使命：置中編輯感（呼應首頁 MIT 開場，與子頁左文右圖區隔） --}}
+            <section class="w-full flex flex-col items-center gap-12 lg:gap-16">
+                <div class="relative w-full flex flex-col items-center pt-4 lg:pt-8" data-aos="fade-up">
+                    <div class="relative z-10 w-full max-w-3xl flex flex-col items-center gap-5 lg:gap-6 text-center">
+                        <div class="section-title-eyebrow">
+                            <span aria-hidden="true">/</span>
+                            <span>匠心與使命</span>
+                            <span aria-hidden="true">/</span>
+                        </div>
+
+                        <div class="relative w-full flex flex-col items-center gap-5 lg:gap-6">
+                            
+                            <h2 class="relative z-10 section-title-heading">
+                                40 載踏實匠心 <span class="text-main2">×</span> 現代睡眠科學
                             </h2>
+                            <p class="relative z-10 text-cb2 text-gray4 max-w-4xl">
+                                堅持純粹的台灣製造（MIT），以誠信為骨幹、科技為經緯，守護每一晚踏實的安睡。蘭頓深耕台灣製床領域逾四十年。四十年間，市場潮流瞬息萬變，但我們對「一張好床」的敬畏從未改變。我們從早期老師傅的手感淬鍊，逐步邁向智慧化精密智造，將在地扎根的踏實精神融入現代睡眠科學，致力為台灣家庭築起一張長達十年安心無虞的健康防線。
+                            </p>
                         </div>
-                        <p class="text-cb2 text-gray4">
-                            蘭頓企業以「工業 4.0 智能生產設備」為核心，將傳統代工升級為高精密的睡眠科學智造。我們堅持在地研發與嚴格品質控管，結合人因工程與在地氣候需求，打造最符合台灣家庭的安心床墊防線。
-                        </p>
-                    </div>
-                    <div class="w-full lg:w-[min(52%,680px)] shrink-0">
-                        <img
-                            src="{{ $page->baseUrl }}/images/img_about1.jpg"
-                            alt="MIT 台灣製造床墊結構"
-                            class="w-full h-auto object-cover"
-                        >
                     </div>
                 </div>
 
-                <div class="w-full h-px bg-gray2" aria-hidden="true"></div>
+                <div class="w-full max-w-[1200px] self-stretch mx-auto" data-aos="fade-up" data-aos-delay="80">
+                    <div
+                        class="about-youtube"
+                        data-youtube-facade
+                        data-youtube-id="_g1WUWEE4vI"
+                    >
+                        <img
+                            src="{{ $page->baseUrl }}/images/video_about.jpg"
+                            alt="蘭頓床墊企業形象"
+                            class="about-youtube__poster"
+                            width="1280"
+                            height="720"
+                            loading="lazy"
+                            decoding="async"
+                        >
+                        <span class="about-youtube__shade" aria-hidden="true"></span>
+                        <button type="button" class="about-youtube__hit" aria-label="播放影片">
+                            <span class="about-youtube__play" aria-hidden="true">
+                                <svg class="about-youtube__play-icon" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+                                    <path fill="currentColor" d="M8 5.14v13.72L19 12 8 5.14z"/>
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+                    <script>
+                        (function () {
+                            var root = document.currentScript && document.currentScript.previousElementSibling;
+                            if (!root || root.dataset.youtubeBound === '1') return;
+                            var id = root.getAttribute('data-youtube-id');
+                            var hit = root.querySelector('.about-youtube__hit');
+                            if (!id || !hit) return;
+                            root.dataset.youtubeBound = '1';
+                            hit.addEventListener('click', function (e) {
+                                e.preventDefault();
+                                if (root.classList.contains('is-playing')) return;
+                                var iframe = document.createElement('iframe');
+                                iframe.src = 'https://www.youtube.com/embed/' + encodeURIComponent(id) +
+                                    '?autoplay=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3';
+                                iframe.title = hit.getAttribute('aria-label') || 'YouTube video';
+                                iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+                                iframe.setAttribute('allowfullscreen', '');
+                                iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+                                root.appendChild(iframe);
+                                root.classList.add('is-playing');
+                            });
+                        })();
+                    </script>
+                </div>
 
-                <div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
-                    <div class="w-full flex items-start gap-4" data-aos="fade-up">
-                        <div class="about-num" aria-hidden="true">01</div>
-                        <div class="flex-1 flex flex-col gap-2 min-w-0">
-                            <h3 class="text-ch5 text-gray5 tracking-widest">台灣製造在地服務</h3>
-                            <p class="text-cb2 text-gray4">堅持在台灣研發、生產與整合供應鏈，確保製程穩定、品質一致；台灣製造、台灣服務，提供更即時的技術支援與售後保障。</p>
+
+                {{-- 2. 三大核心價值觀：首頁亮點列節奏 --}}
+                <div class="w-full max-w-[1100px] flex flex-col md:flex-row md:items-start justify-center gap-10 md:gap-0 pt-4 lg:pt-6" data-aos="fade-up" data-aos-delay="160">
+                    @php
+                        $values = [
+                            [
+                                'num' => '01',
+                                'title' => '匠心質造',
+                                'body' => '傳承老師傅對細節與結構手感的極致要求，結合現代化數位智造管理，確保每一張交付出廠的床墊，都具備始終如一的高精密品質。',
+                            ],
+                            [
+                                'num' => '02',
+                                'title' => '在地風土',
+                                'body' => '跳脫歐美床墊的設計框架，專注研究台灣海島型高溫高濕氣候與國人生活習慣，讓透氣、支撐與耐用性真正契合在地需求。',
+                            ],
+                            [
+                                'num' => '03',
+                                'title' => '永續責任',
+                                'body' => '以產業先行者為己任，全面導入無毒工法與綠色低碳製程，對睡眠者的身體負責，更對孕育我們的土地許下共好承諾。',
+                            ],
+                        ];
+                    @endphp
+                    @foreach ($values as $i => $value)
+                        @if ($i > 0)
+                            <div class="hidden md:block w-px self-stretch bg-main1/15 mx-6 lg:mx-10 shrink-0" aria-hidden="true"></div>
+                        @endif
+                        <div class="w-full md:flex-1 flex flex-col items-center text-center gap-3 min-w-0">
+                            <span class="text-eb3 text-main2 tracking-wider">{{ $value['num'] }}</span>
+                            <h3 class="text-ch5 text-gray5 tracking-widest">{{ $value['title'] }}</h3>
+                            <p class="text-cb3 text-gray4">{{ $value['body'] }}</p>
                         </div>
-                    </div>
-                    <div class="w-full flex items-start gap-4" data-aos="fade-up">
-                        <div class="about-num" aria-hidden="true">02</div>
-                        <div class="flex-1 flex flex-col gap-2 min-w-0">
-                            <h3 class="text-ch5 text-gray5 tracking-widest">工業 4.0 智慧製造</h3>
-                            <p class="text-cb2 text-gray4">導入自動化生產設備，提升彈簧、墊材、車縫與組裝的精準度；從原料、製程到成品建立完整品質管理，降低產品品質差異。</p>
-                        </div>
-                    </div>
-                    <div class="w-full flex items-start gap-4" data-aos="fade-up">
-                        <div class="about-num" aria-hidden="true">03</div>
-                        <div class="flex-1 flex flex-col gap-2 min-w-0">
-                            <h3 class="text-ch5 text-gray5 tracking-widest">完整材料整合</h3>
-                            <p class="text-cb2 text-gray4">整合記憶泡棉、天然乳膠、機能性布料與高規彈簧等多元材料，依不同需求打造合適的睡眠支撐。</p>
-                        </div>
-                    </div>
-                    <div class="w-full flex items-start gap-4" data-aos="fade-up">
-                        <div class="about-num" aria-hidden="true">04</div>
-                        <div class="flex-1 flex flex-col gap-2 min-w-0">
-                            <h3 class="text-ch5 text-gray5 tracking-widest">符合台灣環境需求</h3>
-                            <p class="text-cb2 text-gray4">針對台灣高溫高濕的氣候與居住環境，強化床墊的透氣、舒適與耐用設計。</p>
-                        </div>
-                    </div>
-                    <div class="w-full flex items-start gap-4" data-aos="fade-up">
-                        <div class="about-num" aria-hidden="true">05</div>
-                        <div class="flex-1 flex flex-col gap-2 min-w-0">
-                            <h3 class="text-ch5 text-gray5 tracking-widest">更靈活的供應鏈</h3>
-                            <p class="text-cb2 text-gray4">縮短跨境物流距離，降低運輸與潮濕環境造成的風險，同時提高交期穩定度。</p>
-                        </div>
-                    </div>
-                    <div class="w-full flex items-start gap-4" data-aos="fade-up">
-                        <div class="about-num" aria-hidden="true">06</div>
-                        <div class="flex-1 flex flex-col gap-2 min-w-0">
-                            <h3 class="text-ch5 text-gray5 tracking-widest">符合全球規範</h3>
-                            <p class="text-cb2 text-gray4">取得碳足跡排放標籤，提升產品環保價值、品牌信任與市場競爭力。</p>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </section>
 
-            {{-- 完整產業鏈智造 --}}
-            <section class="w-full flex flex-col gap-20 lg:gap-28">
-                <div class="w-full flex flex-col lg:flex-row lg:items-center gap-10 lg:gap-20" data-aos="fade-up">
-                    <div class="w-full lg:flex-1 min-w-0 overflow-hidden about-media-tr">
-                        <img
-                            src="{{ $page->baseUrl }}/images/img_about2.jpg"
-                            alt="完整產業鏈智造"
-                            class="w-full h-64 md:h-96 object-cover"
-                        >
-                    </div>
-                    <div class="w-full lg:flex-1 flex flex-col gap-8 lg:gap-10 min-w-0">
-                        <div class="flex flex-col gap-3">
-                            <div class="inline-flex items-center gap-3 text-eb2 text-main2 uppercase">
-                                <span aria-hidden="true">/</span>
-                                <span>Smart Manufacturing</span>
-                                <span aria-hidden="true">/</span>
-                            </div>
-                            <h2 class="text-ch3 text-gray5">完整產業鏈智造 <span class="text-main2">×</span> 高規墊材</h2>
-                        </div>
-                        <div class="text-cb2 text-gray4 flex flex-col gap-4">
-                            <p>台灣擁有全球少數具備高精密度、完整垂直整合的床墊產業鏈區域。蘭頓企業結合大數據人因工學研發團隊與國際級 QC（品質控制）硬核標準，讓每張床墊不只是產品，更是一份長達十年的健康承諾。</p>
-                            <p>相較於一般純貼牌的貿易商或傳統小型作坊，蘭頓企業引進工業 4.0 自動化智能生產設備，建立無可替代的商業代工硬實力。</p>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- 工業 4.0 步驟：滿版淺底 --}}
-                <div class="relative py-16 lg:py-20" data-aos="fade-up">
-                    <div class="absolute inset-y-0 left-1/2 w-screen -translate-x-1/2 bg-gray1" aria-hidden="true"></div>
-                    <div class="relative flex flex-col gap-8 lg:gap-10">
-                        <div class="flex flex-col gap-3">
-                            <div class="inline-flex items-center gap-3 text-eb2 text-main2 uppercase">
-                                <span aria-hidden="true">/</span>
-                                <span>SMART MANUFACTURING</span>
-                                <span aria-hidden="true">/</span>
-                            </div>
-                            <h2 class="text-ch3 text-gray5">工業 4.0 <span class="text-main2">×</span> 智慧製造</h2>
-                        </div>
-
-                        <div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                            <div class="flex flex-col gap-5">
-                                <div class="flex items-center">
-                                    <span class="size-2.5 shrink-0 rounded-full bg-main2" aria-hidden="true"></span>
-                                    <span class="flex-1 h-px bg-gray2" aria-hidden="true"></span>
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <p class="text-eb3 text-main2 tracking-wider">STEP 01</p>
-                                    <h3 class="text-ch5 text-gray5 tracking-widest">瑞士進口精密彈簧成型機</h3>
-                                    <p class="text-cb3 text-gray4">拒絕外購規格不一的彈簧，透過全自動設備將高碳鋼絲進行二次高溫電熱淬火，精準調校線徑、圈數與拉伸應力</p>
-                                </div>
-                            </div>
-                            <div class="flex flex-col gap-5">
-                                <div class="flex items-center">
-                                    <span class="size-2.5 shrink-0 rounded-full bg-main2" aria-hidden="true"></span>
-                                    <span class="flex-1 h-px bg-gray2" aria-hidden="true"></span>
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <p class="text-eb3 text-main2 tracking-wider">STEP 02</p>
-                                    <h3 class="text-ch5 text-gray5 tracking-widest">袋裝彈簧超音波焊接</h3>
-                                    <p class="text-cb3 text-gray4">採用先進超音波熔接技術與防潮長纖不織布，精準控制袋裝張力，100% 消除金屬摩擦異音。</p>
-                                </div>
-                            </div>
-                            <div class="flex flex-col gap-5">
-                                <div class="flex items-center">
-                                    <span class="size-2.5 shrink-0 rounded-full bg-main2" aria-hidden="true"></span>
-                                    <span class="flex-1 h-px bg-gray2" aria-hidden="true"></span>
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <p class="text-eb3 text-main2 tracking-wider">STEP 03</p>
-                                    <h3 class="text-ch5 text-gray5 tracking-widest">電腦自動車花</h3>
-                                    <p class="text-cb3 text-gray4">導入多針全自動電腦控制系統，依天絲、瞬涼纖維等布料延伸特性進行精密針距車縫，確保表布耐磨不起泡。</p>
-                                </div>
-                            </div>
-                            <div class="flex flex-col gap-5">
-                                <div class="flex items-center">
-                                    <span class="size-2.5 shrink-0 rounded-full bg-main2" aria-hidden="true"></span>
-                                    <span class="flex-1 h-px bg-gray2" aria-hidden="true"></span>
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <p class="text-eb3 text-main2 tracking-wider">STEP 04</p>
-                                    <h3 class="text-ch5 text-gray5 tracking-widest">智慧熱熔膠製程</h3>
-                                    <p class="text-cb3 text-gray4">由機械手臂進行多點精準定量噴塗（使用符合 SGS/歐盟認證的 PUR 熱熔膠），摒棄傳統人工刷膠造成的甲醛/甲苯過量與黏合不均問題。</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {{-- 台灣環境需求 --}}
+            {{-- 3. 雙重權威與綠色承諾 --}}
             <section class="w-full flex flex-col lg:flex-row lg:items-center gap-10 lg:gap-20" data-aos="fade-up">
-                <div class="w-full lg:flex-1 flex flex-col gap-8 lg:gap-10 min-w-0">
-                    <div class="flex flex-col gap-3">
-                        <div class="inline-flex items-center gap-3 text-eb2 text-main2 uppercase">
+                <div class="w-full lg:flex-1 flex flex-col gap-6 lg:gap-8 min-w-0">
+                    <div class="section-title">
+                        <div class="section-title-eyebrow">
                             <span aria-hidden="true">/</span>
-                            <span>Designed for Taiwan</span>
+                            <span>綠色與品質權威</span>
                             <span aria-hidden="true">/</span>
                         </div>
-                        <h2 class="text-ch3 text-gray5">台灣環境需求 <span class="text-main2">×</span> 人因設計</h2>
+                        <h2 class="section-title-heading">
+                            以科學立標竿 <span class="text-main2">×</span> 綠色低碳轉型
+                        </h2>
                     </div>
                     <p class="text-cb2 text-gray4">
-                        不同於歐美乾燥且空間遼闊的居住環境，蘭頓針對台灣高溫、高濕與住宅空間有限的環境特性，將氣候與使用需求融入床墊設計。
+                        真正的信賴，來自嚴謹數據的檢驗與對未來的敬畏。
+</br>
+                        蘭頓不僅連續 20 年通過 ISO-9001 國際品質管理體系認證，更成為台灣首家取得國家環境部「產品碳足跡標籤」認證的床墊製造商。這代表我們不只追求產品本身的無瑕，更將永續視野延伸至原料開採、製造生產到物流包材的全生命週期，為台灣床墊產業樹立綠色轉型的新高度。
                     </p>
-                    <div class="w-full flex flex-col gap-6">
-                        <div class="w-full flex items-start gap-4">
-                            <div class="about-num" aria-hidden="true">01</div>
-                            <div class="flex-1 flex flex-col gap-1 min-w-0">
-                                <h3 class="text-ch5 text-gray5 tracking-widest">透氣散熱</h3>
-                                <p class="text-cb3 text-gray4">運用瞬涼纖維與立體結構，提升空氣流通與散熱，減少悶熱與濕氣累積。</p>
-                            </div>
-                        </div>
-                        <div class="w-full flex items-start gap-4">
-                            <div class="about-num" aria-hidden="true">02</div>
-                            <div class="flex-1 flex flex-col gap-1 min-w-0">
-                                <h3 class="text-ch5 text-gray5 tracking-widest">符合台灣居住環境</h3>
-                                <p class="text-cb3 text-gray4">強化床墊結構與邊框耐用度，方便應對狹窄樓梯、電梯及住宅空間。</p>
-                            </div>
-                        </div>
-                        <div class="w-full flex items-start gap-4">
-                            <div class="about-num" aria-hidden="true">03</div>
-                            <div class="flex-1 flex flex-col gap-1 min-w-0">
-                                <h3 class="text-ch5 text-gray5 tracking-widest">人因導向設計</h3>
-                                <p class="text-cb3 text-gray4">從實際居家使用情境出發，兼顧長者、兒童與不同家庭成員的睡眠需求。</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-                <div class="w-full lg:flex-1 min-w-0 overflow-hidden about-media-tl">
+                <div class="w-full lg:flex-1 min-w-0 overflow-hidden aspect-[4/3] about-media-tl">
                     <img
-                        src="{{ $page->baseUrl }}/images/img_about3.jpg"
-                        alt="台灣環境需求與人因設計"
-                        class="w-full h-64 md:h-[560px] object-cover"
+                        src="{{ $page->baseUrl }}/images/img_about2.jpg"
+                        alt="以科學立標竿與綠色低碳轉型"
+                        class="w-full h-full object-cover"
                     >
                 </div>
             </section>
 
-            {{-- 三軌布局 --}}
+            {{-- 4. 企業社會責任 --}}
             <section class="w-full flex flex-col lg:flex-row lg:items-center gap-10 lg:gap-20" data-aos="fade-up">
-                <div class="w-full lg:flex-1 min-w-0 overflow-hidden about-media-tr order-2 lg:order-1">
+                <div class="w-full lg:flex-1 min-w-0 overflow-hidden aspect-[4/3] about-media-tr order-2 lg:order-1">
                     <img
-                        src="{{ $page->baseUrl }}/images/img_about4.jpg"
-                        alt="OEM ODM OBM 三軌布局"
-                        class="w-full h-64 md:h-[560px] object-cover"
+                        src="{{ $page->baseUrl }}/images/img_about3.jpg"
+                        alt="深耕在地聚落與守護世代共好"
+                        class="w-full h-full object-cover"
                     >
                 </div>
-                <div class="w-full lg:flex-1 flex flex-col gap-8 lg:gap-10 min-w-0 order-1 lg:order-2">
-                    <div class="flex flex-col gap-3">
-                        <div class="inline-flex items-center gap-3 text-eb2 text-main2 uppercase">
+                <div class="w-full lg:flex-1 flex flex-col gap-6 lg:gap-8 min-w-0 order-1 lg:order-2">
+                    <div class="section-title">
+                        <div class="section-title-eyebrow">
                             <span aria-hidden="true">/</span>
-                            <span>OBM × ODM × OEM</span>
+                            <span>社會責任與願景</span>
                             <span aria-hidden="true">/</span>
                         </div>
-                        <h2 class="text-ch3 text-gray5">OEM<span class="text-main2">×</span>ODM<span class="text-main2">×</span>OBM 三軌布局</h2>
+                        <h2 class="section-title-heading">
+                            深耕在地聚落 <span class="text-main2">×</span> 守護世代共好
+                        </h2>
                     </div>
                     <div class="text-cb2 text-gray4 flex flex-col gap-4">
-                        <p>除了自主研發的頂級產品系列外，蘭頓企業（OBM）同時作為高階床墊 ODM/OEM 的產業巨擘，與多家本地知名品牌、實體連鎖家具大廠及新創跨境電商品牌深度合作，提供頂尖的結構設計研發與現代化智能生產線協助。</p>
-                        <p>不論是少量、高精度的創新產品打樣，還是國際化的大規模長期產能開發，蘭頓皆能憑藉智能智慧化彈性生產線，快速切換不同規格、硬度與材料配置。我們秉持高度的供應鏈彈性與嚴苛的保密責任感，協助合作夥伴將具備「人因工學與材料科學」的產品構想化為市場現實。</p>
+                        <p>蘭頓始終相信，企業的價值不在於規模大小，而在於為社會帶來多少正向改變。我們扎根台灣在地產業鏈，培育在地技工人才與專業工匠，推動傳統製造業的智慧升級與技術傳承。</p>
+                        <p>面對氣候變遷，我們積極朝向少毒、低碳、循環經濟邁進，降低生產對環境的負擔，與土地、員工及合作夥伴攜手，實現人與自然永續共存的健康未來。</p>
                     </div>
                 </div>
             </section>
+
+            {{-- 5. 戰略生態 --}}
+            <section class="w-full flex flex-col lg:flex-row lg:items-center gap-10 lg:gap-20" data-aos="fade-up">
+                <div class="w-full lg:flex-1 flex flex-col gap-6 lg:gap-8 min-w-0">
+                    <div class="section-title">
+                        <div class="section-title-eyebrow">
+                            <span aria-hidden="true">/</span>
+                            <span>產業生態共創</span>
+                            <span aria-hidden="true">/</span>
+                        </div>
+                        <h2 class="section-title-heading">
+                            自主品牌引領 <span class="text-main2">×</span> 戰略後盾共創
+                        </h2>
+                    </div>
+                    <p class="text-cb2 text-gray4">
+                        蘭頓身兼高品質自主品牌（OBM）的推動者，也是國內外大型家具品牌與電商通路背後最堅實的戰略代工（OEM / ODM）夥伴。我們以彈性智慧產線與保密誠信，協助合作夥伴將創新構想化為真實，共同成就多元繁榮的睡眠產業生態圈。
+                    </p>
+                </div>
+                <div class="w-full lg:flex-1 min-w-0 overflow-hidden aspect-[4/3] about-media-tl">
+                    <img
+                        src="{{ $page->baseUrl }}/images/img_about4.jpg"
+                        alt="自主品牌引領與戰略後盾共創"
+                        class="w-full h-full object-cover"
+                    >
+                </div>
+            </section>
+
+            @include('_components.about-pillars')
         </div>
     </div>
 @endsection

@@ -12,14 +12,14 @@
             >
         </a>
 
-        <button id="mobile-menu-btn" class="lg:hidden p-2 focus:outline-none z-50 flex items-center justify-center cursor-pointer transition-colors" aria-label="開啟選單">
+        <button id="mobile-menu-btn" class="lg:hidden py-2 pl-2 pr-0 focus:outline-none z-50 flex items-center justify-center cursor-pointer transition-colors" aria-label="開啟選單">
             <i data-lucide="menu" id="mobile-menu-icon" class="w-6 h-6"></i>
         </button>
 
-        <div id="nav-menu" class="fixed lg:static top-0 right-0 max-w-full w-full sm:w-[320px] lg:w-auto h-screen max-h-[100dvh] lg:h-auto bg-white lg:bg-transparent shadow-2xl lg:shadow-none p-6 md:px-12 pt-24 pb-12 lg:p-0 flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-10 translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-40 overflow-y-auto lg:overflow-visible">
+        <div id="nav-menu" class="nav-menu-panel is-closed fixed lg:static top-0 right-0 lg:w-auto h-screen max-h-[100dvh] lg:h-auto shadow-2xl lg:shadow-none p-6 md:px-12 pt-24 pb-12 lg:p-0 flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-10 z-40 overflow-y-auto lg:overflow-visible">
             <ul class="flex flex-col lg:flex-row lg:items-center gap-0 lg:gap-6 w-full lg:w-auto">
                 <li class="py-1 lg:py-0">
-                    <a href="{{ $page->baseUrl }}/about/" class="nav-link {{ $page->isActive('/about') }}">蘭頓精神</a>
+                    <a href="{{ $page->baseUrl }}/about/" class="nav-link {{ $page->isActive('/about') }}">關於蘭頓</a>
                 </li>
                 <li class="py-1 lg:py-0">
                     <a href="{{ $page->baseUrl }}/cooperation/" class="nav-link {{ $page->isActive('/cooperation') }}">合作方式</a>
@@ -41,6 +41,6 @@
             </a>
         </div>
 
-        <div id="mobile-menu-overlay" class="fixed inset-0 bg-overlay/40 hidden z-30 lg:hidden"></div>
+        <div id="mobile-menu-overlay" class="nav-menu-overlay fixed inset-0 bg-overlay/50 z-30 lg:hidden opacity-0 pointer-events-none"></div>
     </nav>
 </header>

@@ -136,6 +136,47 @@ function initProcessAsidePin() {
     return updatePin;
 }
 
+/**
+ * 手機分類選單置頂：同樣用 translateY（避開 content-panel overflow）
+ */
+function initProcessMobileNavPin() {
+    const wrap = document.querySelector('[data-process-nav-mobile-wrap]');
+    const nav = document.querySelector('[data-process-nav-mobile]');
+    const root = document.querySelector('[data-process-flow]');
+    if (!wrap || !nav || !root) {
+        return null;
+    }
+
+    const LG = 1200;
+
+    function updatePin() {
+        if (window.innerWidth >= LG) {
+            wrap.style.height = '';
+            nav.style.transform = '';
+            nav.classList.remove('is-pinned');
+            return;
+        }
+
+        wrap.style.height = `${nav.offsetHeight}px`;
+        const top = wrap.getBoundingClientRect().top;
+        if (top >= 0) {
+            nav.style.transform = '';
+            nav.classList.remove('is-pinned');
+            return;
+        }
+
+        const release = root.getBoundingClientRect().bottom - nav.offsetHeight;
+        const pinnedTop = Math.min(0, release);
+        nav.style.transform = `translate3d(0, ${pinnedTop - top}px, 0)`;
+        nav.classList.add('is-pinned');
+    }
+
+    window.__processMobileNavPin = updatePin;
+    window.addEventListener('resize', updatePin);
+    updatePin();
+    return updatePin;
+}
+
 /** 合作流程：左側／手機錨點 scroll-spy + 平滑捲動 */
 function initProcessFlowNav() {
     const root = document.querySelector('[data-process-flow]');
@@ -144,6 +185,7 @@ function initProcessFlowNav() {
     }
 
     initProcessAsidePin();
+    initProcessMobileNavPin();
 
     const steps = Array.from(root.querySelectorAll('[data-process-step]'));
     const links = Array.from(root.querySelectorAll('[data-process-link]'));
@@ -165,7 +207,10 @@ function initProcessFlowNav() {
         const mobileNav = root.querySelector('[data-process-nav-mobile]');
         const activeLink = mobileNav && mobileNav.querySelector(`[data-process-id="${id}"]`);
         if (activeLink && mobileNav) {
-            const linkLeft = activeLink.offsetLeft;
+            const linkLeft =
+                activeLink.getBoundingClientRect().left -
+                mobileNav.getBoundingClientRect().left +
+                mobileNav.scrollLeft;
             const linkWidth = activeLink.offsetWidth;
             const navWidth = mobileNav.clientWidth;
             mobileNav.scrollTo({
@@ -233,14 +278,21 @@ function initProcessFlowNav() {
 
             e.preventDefault();
             const token = beginProgrammaticScroll(id);
+            const mobileNav = root.querySelector('[data-process-nav-mobile]');
+            const pinOffset =
+                mobileNav && window.innerWidth < 1200
+                    ? -(mobileNav.offsetHeight + 16)
+                    : -96;
 
             if (window.lenis) {
                 window.lenis.scrollTo(target, {
-                    offset: -96,
+                    offset: pinOffset,
                     onComplete: () => finishProgrammaticScroll(token, id),
                 });
             } else {
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const top =
+                    target.getBoundingClientRect().top + window.scrollY + pinOffset;
+                window.scrollTo({ top, behavior: 'smooth' });
                 window.addEventListener(
                     'scrollend',
                     () => finishProgrammaticScroll(token, id),
@@ -260,7 +312,7 @@ function initProcessFlowNav() {
 
 /**
  * 首頁 OEM 大圖：sticky 捲動縮放
- * 媒體固定 100vw×100vh，以 scale 放大（避免改 width/height 重排跳動）
+ * 以寬高從 16:9 小片 → 滿視窗（不用 transform，避免 iOS／平板 video 黑邊）
  * 進度起點：視覺上影片上緣剛進視窗；0→70% 放大，70→100% 停住
  */
 function initOemZoom() {
@@ -273,7 +325,11 @@ function initOemZoom() {
     const overlay = media.querySelector('[data-oem-zoom-overlay]');
     const title = media.querySelector('[data-oem-zoom-title]');
     const body = media.querySelector('[data-oem-zoom-body]');
+    const video = media.querySelector('video[data-oem-zoom-image]');
+    const poster = media.querySelector('[data-oem-zoom-poster]');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    // 與專案 lg（1200）對齊：以下只顯示圖片、不播影片
+    const desktopVideo = window.matchMedia('(min-width: 1200px)');
     const ZOOM_END = 0.7;
     const START_W = 960;
     const START_H = 540;
@@ -295,22 +351,32 @@ function initOemZoom() {
         el.style.transform = t >= 0.999 ? 'none' : `translate3d(0, ${(1 - t) * 16}px, 0)`;
     }
 
+    /**
+     * 桌機起始：16:9 小片
+     * 手機／平板起始：螢幕比例、約 72% 置中（對齊設計黃框）
+     */
+    function getStartSize(vw, vh) {
+        if (desktopVideo.matches) {
+            const startW = Math.min(START_W, Math.max(280, vw - 32));
+            return { startW, startH: startW * (START_H / START_W) };
+        }
+        const s = 0.72;
+        return { startW: vw * s, startH: vh * s };
+    }
+
     function paint(progress) {
         const vw = window.innerWidth || 1;
         const vh = window.innerHeight || 1;
-        const startW = Math.min(START_W, Math.max(280, vw - 32));
-        const startH = startW * (START_H / START_W);
+        const { startW, startH } = getStartSize(vw, vh);
         const t = clamp01(progress / ZOOM_END);
 
-        // 以寬為基準的 scale；視覺尺寸 ≈ startW → 100vw
-        const scale0 = startW / vw;
-        const scale = scale0 + (1 - scale0) * t;
-        // border-radius 會被 scale 一起縮小，故除以 scale 維持視覺約 20→0
-        const radius = scale > 0.001 ? (START_RADIUS * (1 - t)) / scale : 0;
-        // 滿版約 0.7（原為 1），色遮仍在、影片仍可辨
+        const w = startW + (vw - startW) * t;
+        const h = startH + (vh - startH) * t;
+        const radius = START_RADIUS * (1 - t);
         const o = 0.2 + 0.8 * t;
 
-        media.style.setProperty('--zoom-scale', String(scale));
+        media.style.setProperty('--zoom-w', `${w}px`);
+        media.style.setProperty('--zoom-h', `${h}px`);
         media.style.setProperty('--zoom-r', `${radius}px`);
         media.style.setProperty('--zoom-o', String(o));
         if (overlay) {
@@ -328,8 +394,7 @@ function initOemZoom() {
 
         const vh = window.innerHeight || 1;
         const vw = window.innerWidth || 1;
-        const startW = Math.min(START_W, Math.max(280, vw - 32));
-        const startH = startW * (START_H / START_W);
+        const { startH } = getStartSize(vw, vh);
         // 視覺上置中小片上緣進視窗底時開始
         const startAt = (vh + startH) / 2;
         const endTravel = root.offsetHeight - vh;
@@ -344,36 +409,76 @@ function initOemZoom() {
         paint(progress);
     }
 
-    const video = media.querySelector('video[data-oem-zoom-image]');
-    const poster = media.querySelector('[data-oem-zoom-poster]');
     if (video) {
         let posterHidden = false;
+
+        const showPoster = () => {
+            posterHidden = false;
+            if (!poster) {
+                return;
+            }
+            poster.classList.remove('is-hidden');
+            poster.removeAttribute('hidden');
+        };
+
         const hidePoster = () => {
-            if (posterHidden || !poster) {
+            if (!desktopVideo.matches || posterHidden || !poster) {
                 return;
             }
             posterHidden = true;
             poster.classList.add('is-hidden');
             window.setTimeout(() => {
-                poster.setAttribute('hidden', '');
+                if (posterHidden) {
+                    poster.setAttribute('hidden', '');
+                }
             }, 480);
         };
 
         const tryHidePoster = () => {
-            if (video.readyState >= 2 && !video.paused && video.currentTime > 0.02) {
+            if (
+                desktopVideo.matches
+                && video.readyState >= 2
+                && !video.paused
+                && video.currentTime > 0.02
+            ) {
                 hidePoster();
+            }
+        };
+
+        const pauseForStaticImage = () => {
+            if (!video.paused) {
+                video.pause();
+            }
+            showPoster();
+            // 避免手機／平板仍下載大影片
+            video.removeAttribute('src');
+            video.load();
+        };
+
+        const ensureVideoSrc = () => {
+            if (video.getAttribute('src')) {
+                return;
+            }
+            const src = video.dataset.src;
+            if (src) {
+                video.setAttribute('src', src);
+                video.load();
             }
         };
 
         video.addEventListener('playing', tryHidePoster);
         video.addEventListener('timeupdate', tryHidePoster);
 
-        // 進場播放、離場暫停；有畫面後淡出封面
         if ('IntersectionObserver' in window) {
             const io = new IntersectionObserver(
                 (entries) => {
                     entries.forEach((entry) => {
+                        if (!desktopVideo.matches) {
+                            pauseForStaticImage();
+                            return;
+                        }
                         if (entry.isIntersecting) {
+                            ensureVideoSrc();
                             const play = video.play();
                             if (play && typeof play.then === 'function') {
                                 play.then(tryHidePoster).catch(() => {});
@@ -387,6 +492,24 @@ function initOemZoom() {
             );
             io.observe(root);
         }
+
+        const onVideoModeChange = () => {
+            if (desktopVideo.matches) {
+                ensureVideoSrc();
+            } else {
+                pauseForStaticImage();
+            }
+        };
+
+        if (typeof desktopVideo.addEventListener === 'function') {
+            desktopVideo.addEventListener('change', onVideoModeChange);
+        } else if (typeof desktopVideo.addListener === 'function') {
+            desktopVideo.addListener(onVideoModeChange);
+        }
+
+        if (!desktopVideo.matches) {
+            pauseForStaticImage();
+        }
     }
 
     window.__updateOemZoom = updateOemZoom;
@@ -395,64 +518,48 @@ function initOemZoom() {
 }
 
 /**
- * 橫向區：桌機拖曳一次只進一格；觸控靠 scroll-snap
+ * 橫向區拖曳：
+ * - 預設：鬆手吸附最近一格（夥伴 logo 列）
+ * - data-drag-scroll="free"：自由停住、不吸附（關於選單）
+ * 觸控仍交給原生慣性捲動
  */
 function initDragScroll() {
-    const THRESHOLD = 56;
-    const DRAG_MAX = 36;
-    const DRAG_FACTOR = 0.28;
-
     document.querySelectorAll('[data-drag-scroll]').forEach((el) => {
-        const track = el.querySelector('[data-drag-scroll-track]') || el.firstElementChild;
+        const free = el.getAttribute('data-drag-scroll') === 'free';
         const items = Array.from(el.querySelectorAll('[data-drag-scroll-item]'));
-        if (!track || !items.length) {
+        if (!items.length) {
             return;
         }
 
         let isDown = false;
         let startX = 0;
+        let startScroll = 0;
         let moved = false;
-        let startIndex = 0;
+        let lastX = 0;
+        let lastT = 0;
+        let velocity = 0;
 
-        function maxIndex() {
-            const maxScroll = Math.max(0, el.scrollWidth - el.clientWidth);
-            let last = 0;
-            items.forEach((item, i) => {
-                if (item.offsetLeft <= maxScroll + 1) {
-                    last = i;
-                }
-            });
-            return last;
+        function itemScrollLeft(item) {
+            return (
+                item.getBoundingClientRect().left -
+                el.getBoundingClientRect().left +
+                el.scrollLeft
+            );
         }
 
-        function currentIndex() {
-            const x = el.scrollLeft;
+        function nearestLeft(from) {
             let best = 0;
             let bestDist = Infinity;
-            items.forEach((item, i) => {
-                const d = Math.abs(item.offsetLeft - x);
+            const maxScroll = Math.max(0, el.scrollWidth - el.clientWidth);
+            items.forEach((item) => {
+                const left = Math.min(Math.max(0, itemScrollLeft(item)), maxScroll);
+                const d = Math.abs(left - from);
                 if (d < bestDist) {
                     bestDist = d;
-                    best = i;
+                    best = left;
                 }
             });
             return best;
-        }
-
-        function goTo(i) {
-            const next = Math.max(0, Math.min(maxIndex(), i));
-            const left = items[next].offsetLeft;
-            el.scrollTo({ left, behavior: 'smooth' });
-            return next;
-        }
-
-        function setDragOffset(dx) {
-            const capped = Math.max(-DRAG_MAX, Math.min(DRAG_MAX, dx * DRAG_FACTOR));
-            track.style.transform = capped ? `translate3d(${capped}px,0,0)` : '';
-        }
-
-        function clearDragOffset() {
-            track.style.transform = '';
         }
 
         el.addEventListener('pointerdown', (e) => {
@@ -464,14 +571,11 @@ function initDragScroll() {
             }
             isDown = true;
             moved = false;
-            startX = e.clientX;
-            startIndex = currentIndex();
-            el.classList.add('is-dragging');
-            try {
-                el.setPointerCapture(e.pointerId);
-            } catch (_) {
-                /* ignore */
-            }
+            velocity = 0;
+            startX = lastX = e.clientX;
+            lastT = performance.now();
+            startScroll = el.scrollLeft;
+            // 等真正移動再進入拖曳，否則會吃掉連結 click
         });
 
         el.addEventListener('pointermove', (e) => {
@@ -479,30 +583,48 @@ function initDragScroll() {
                 return;
             }
             const dx = e.clientX - startX;
-            if (Math.abs(dx) > 6) {
-                moved = true;
+            if (!moved && Math.abs(dx) <= 4) {
+                return;
             }
-            setDragOffset(dx);
+
+            if (!moved) {
+                moved = true;
+                el.classList.add('is-dragging');
+                el.style.scrollSnapType = 'none';
+                try {
+                    el.setPointerCapture(e.pointerId);
+                } catch (_) {
+                    /* ignore */
+                }
+            }
+
+            const now = performance.now();
+            const dt = Math.max(1, now - lastT);
+            velocity = ((e.clientX - lastX) / dt) * 16;
+            lastX = e.clientX;
+            lastT = now;
+            el.scrollLeft = startScroll - dx;
         });
 
         function endDrag(e) {
             if (!isDown) {
                 return;
             }
-            const dx = e.clientX - startX;
             isDown = false;
             el.classList.remove('is-dragging');
-            clearDragOffset();
+            el.style.scrollSnapType = '';
 
-            if (Math.abs(dx) >= THRESHOLD) {
-                goTo(startIndex + (dx < 0 ? 1 : -1));
-            } else {
-                goTo(startIndex);
+            if (!moved) {
+                return;
             }
 
-            if (moved) {
-                e.preventDefault();
+            if (!free) {
+                const coast = Math.max(-180, Math.min(180, -velocity * 12));
+                const target = nearestLeft(el.scrollLeft + coast);
+                el.scrollTo({ left: target, behavior: 'smooth' });
             }
+
+            e.preventDefault();
         }
 
         el.addEventListener('pointerup', endDrag);
@@ -565,13 +687,219 @@ function initHomeMaterials() {
     });
 }
 
+/**
+ * 關於子選單：換頁後維持橫向捲動位置（避免每次跳回最左）
+ */
+function initAboutSubnavScroll() {
+    const nav = document.querySelector('.about-subnav-scroll');
+    if (!nav) {
+        return;
+    }
+
+    const storageKey = 'about-subnav-scroll-left';
+    const saved = sessionStorage.getItem(storageKey);
+
+    if (saved !== null) {
+        nav.scrollLeft = Number.parseInt(saved, 10) || 0;
+    } else {
+        const active = nav.querySelector('[aria-current="page"]');
+        if (active) {
+            const offset =
+                active.getBoundingClientRect().left -
+                nav.getBoundingClientRect().left +
+                nav.scrollLeft;
+            nav.scrollLeft = Math.max(
+                0,
+                offset - (nav.clientWidth - active.offsetWidth) / 2
+            );
+        }
+    }
+
+    nav.querySelectorAll('a[href]').forEach((link) => {
+        link.addEventListener('click', () => {
+            sessionStorage.setItem(storageKey, String(nav.scrollLeft));
+        });
+    });
+}
+
+/** 首頁 Hero：淡入淡出輪播（左右箭頭 + 目前／總數進度條） */
+function initHomeHeroSlider() {
+    const root = document.querySelector('[data-home-hero-slider]');
+    if (!root) {
+        return;
+    }
+
+    const slides = Array.from(root.querySelectorAll('[data-home-hero-slide]'));
+    const controls = root.querySelector('[data-home-hero-controls]');
+    if (slides.length < 2 || !controls) {
+        return;
+    }
+
+    const prevBtn = controls.querySelector('[data-home-hero-prev]');
+    const nextBtn = controls.querySelector('[data-home-hero-next]');
+    const currentEl = controls.querySelector('[data-home-hero-current]');
+    const progressEl = controls.querySelector('[data-home-hero-progress]');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const INTERVAL = 5000;
+    let index = Math.max(
+        0,
+        slides.findIndex((slide) => slide.classList.contains('is-active'))
+    );
+    let timer = null;
+    let paused = false;
+
+    root.style.setProperty('--home-hero-interval', `${INTERVAL}ms`);
+
+    function pad(n) {
+        return String(n).padStart(2, '0');
+    }
+
+    function restartProgress() {
+        if (!progressEl) {
+            return;
+        }
+        progressEl.classList.remove('is-running');
+        progressEl.style.width = '';
+        // 強制重啟 CSS animation
+        void progressEl.offsetWidth;
+        if (reduceMotion.matches) {
+            progressEl.style.width = '100%';
+            return;
+        }
+        if (paused) {
+            progressEl.style.width = '0%';
+            return;
+        }
+        progressEl.classList.add('is-running');
+    }
+
+    function goTo(nextIndex) {
+        const total = slides.length;
+        index = ((nextIndex % total) + total) % total;
+
+        slides.forEach((slide, i) => {
+            slide.classList.toggle('is-active', i === index);
+        });
+
+        if (currentEl) {
+            currentEl.textContent = pad(index + 1);
+        }
+
+        restartProgress();
+        armTimer();
+    }
+
+    function armTimer() {
+        clearTimeout(timer);
+        timer = null;
+        if (paused || reduceMotion.matches) {
+            return;
+        }
+        timer = window.setTimeout(() => goTo(index + 1), INTERVAL);
+    }
+
+    function pause() {
+        paused = true;
+        clearTimeout(timer);
+        timer = null;
+        if (!progressEl) {
+            return;
+        }
+        const width = getComputedStyle(progressEl).width;
+        progressEl.classList.remove('is-running');
+        progressEl.style.width = width;
+    }
+
+    function resume() {
+        if (!paused) {
+            return;
+        }
+        paused = false;
+        restartProgress();
+        armTimer();
+    }
+
+    prevBtn?.addEventListener('click', () => goTo(index - 1));
+    nextBtn?.addEventListener('click', () => goTo(index + 1));
+
+    root.addEventListener('mouseenter', pause);
+    root.addEventListener('mouseleave', resume);
+    root.addEventListener('focusin', pause);
+    root.addEventListener('focusout', (event) => {
+        if (!root.contains(event.relatedTarget)) {
+            resume();
+        }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            pause();
+        } else {
+            resume();
+        }
+    });
+
+    reduceMotion.addEventListener('change', () => {
+        if (reduceMotion.matches) {
+            pause();
+        } else {
+            resume();
+        }
+    });
+
+    goTo(index);
+}
+
+/**
+ * YouTube：封面點擊後在原地插入 iframe 直接播放
+ */
+function initYoutubeFacades() {
+    document.querySelectorAll('[data-youtube-facade]').forEach((root) => {
+        if (root.dataset.youtubeBound === '1') {
+            return;
+        }
+        root.dataset.youtubeBound = '1';
+
+        const id = root.getAttribute('data-youtube-id');
+        const hit = root.querySelector('.about-youtube__hit');
+        if (!id || !hit) {
+            return;
+        }
+
+        hit.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (root.classList.contains('is-playing')) {
+                return;
+            }
+
+            const iframe = document.createElement('iframe');
+            iframe.src =
+                `https://www.youtube.com/embed/${encodeURIComponent(id)}` +
+                '?autoplay=1&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3';
+            iframe.title = hit.getAttribute('aria-label') || 'YouTube video';
+            iframe.setAttribute(
+                'allow',
+                'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
+            );
+            iframe.setAttribute('allowfullscreen', '');
+            iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+            root.appendChild(iframe);
+            root.classList.add('is-playing');
+        });
+    });
+}
+
 onReady(function () {
     initAos();
     bindAosRevealFallback();
     initProcessFlowNav();
     initOemZoom();
     initHomeMaterials();
+    initHomeHeroSlider();
     initDragScroll();
+    initAboutSubnavScroll();
+    initYoutubeFacades();
 
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
@@ -759,6 +1087,9 @@ function onScrollFrame() {
     if (typeof window.__processAsidePin === 'function') {
         window.__processAsidePin();
     }
+    if (typeof window.__processMobileNavPin === 'function') {
+        window.__processMobileNavPin();
+    }
 }
 
 window.addEventListener('scroll', onScrollFrame, { passive: true });
@@ -783,18 +1114,39 @@ if (backToTopBtn) {
 }
 
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-const mobileMenuIcon = document.getElementById('mobile-menu-icon');
 const navMenu = document.getElementById('nav-menu');
 const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
 
 function setMobileMenuIcon(name) {
-    if (!mobileMenuIcon) {
+    // Lucide createIcons() 會把節點換成新 SVG，必須每次重查，不能快取舊參照
+    const icon = document.getElementById('mobile-menu-icon');
+    if (!icon) {
         return;
     }
 
-    mobileMenuIcon.setAttribute('data-lucide', name);
+    icon.setAttribute('data-lucide', name);
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
+    }
+
+    if (mobileMenuBtn) {
+        mobileMenuBtn.setAttribute('aria-label', name === 'x' ? '關閉選單' : '開啟選單');
+    }
+}
+
+function lockPageScroll() {
+    document.documentElement.classList.add('overflow-hidden');
+    document.body.classList.add('overflow-hidden');
+    if (window.lenis) {
+        window.lenis.stop();
+    }
+}
+
+function unlockPageScroll() {
+    document.documentElement.classList.remove('overflow-hidden');
+    document.body.classList.remove('overflow-hidden');
+    if (window.lenis) {
+        window.lenis.start();
     }
 }
 
@@ -803,12 +1155,15 @@ function closeMobileMenu() {
         return;
     }
 
-    navMenu.classList.add('translate-x-full');
+    navMenu.classList.add('is-closed');
     if (mobileMenuOverlay) {
-        mobileMenuOverlay.classList.add('hidden');
+        mobileMenuOverlay.classList.remove('is-visible');
+    }
+    if (mainHeader) {
+        mainHeader.classList.remove('is-mobile-menu-open');
     }
     setMobileMenuIcon('menu');
-    document.body.classList.remove('overflow-hidden');
+    unlockPageScroll();
 }
 
 function openMobileMenu() {
@@ -816,16 +1171,19 @@ function openMobileMenu() {
         return;
     }
 
-    navMenu.classList.remove('translate-x-full');
+    navMenu.classList.remove('is-closed');
     if (mobileMenuOverlay) {
-        mobileMenuOverlay.classList.remove('hidden');
+        mobileMenuOverlay.classList.add('is-visible');
+    }
+    if (mainHeader) {
+        mainHeader.classList.add('is-mobile-menu-open');
     }
     setMobileMenuIcon('x');
-    document.body.classList.add('overflow-hidden');
+    lockPageScroll();
 }
 
 function toggleMobileMenu() {
-    const isOpen = navMenu && !navMenu.classList.contains('translate-x-full');
+    const isOpen = navMenu && !navMenu.classList.contains('is-closed');
     if (isOpen) {
         closeMobileMenu();
     } else {

@@ -25,9 +25,16 @@ description: 床墊知識——結構、材質與睡眠科學
                     data-aos="fade-up"
                 >
                     <div
-                        class="w-full lg:w-[min(100%,620px)] lg:max-w-[48%] shrink-0 h-64 md:h-80 lg:h-96 bg-gray1 overflow-hidden flex flex-col justify-center items-center {{ $loop->index % 2 ? 'about-media-tr' : 'about-media-tl' }}"
+                        class="relative w-full lg:w-[min(100%,620px)] lg:max-w-[48%] shrink-0 h-64 md:h-80 lg:h-96 bg-gray1 overflow-hidden {{ $loop->index % 2 ? 'about-media-tr' : 'about-media-tl' }}"
                     >
-                        <p class="text-cb3 text-gray4">待換（示意圖）</p>
+                        <img
+                            src="{{ $page->baseUrl }}/images/{{ $article['img'] }}"
+                            alt="{{ $article['title'] }}"
+                            class="w-full h-full object-cover object-center"
+                            loading="lazy"
+                            decoding="async"
+                        >
+                        <div class="absolute inset-0 bg-overlay/10 pointer-events-none" aria-hidden="true"></div>
                     </div>
 
                     <div class="flex-1 min-w-0 pt-0 lg:pt-6 flex flex-col gap-8 lg:gap-10">

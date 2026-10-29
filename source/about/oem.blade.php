@@ -20,13 +20,13 @@ description: 蘭頓專業代工——OEM／ODM／OBM 戰略合作與保密機制
             <section class="w-full flex flex-col gap-12 lg:gap-16" data-aos="fade-up">
                 <div class="w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20 lg:items-center">
                     <div class="lg:col-span-5 flex flex-col gap-6 lg:gap-8 min-w-0">
-                        <div class="flex flex-col gap-3">
-                            <div class="inline-flex items-center gap-3 text-eb2 text-main2 uppercase">
+                        <div class="section-title">
+                            <div class="section-title-eyebrow section-title-eyebrow--upper">
                                 <span aria-hidden="true">/</span>
                                 <span>OEM × ODM × OBM</span>
                                 <span aria-hidden="true">/</span>
                             </div>
-                            <h2 class="text-ch3 text-gray5">
+                            <h2 class="section-title-heading">
                                 戰略供應鏈 <span class="text-main2">×</span> 彈性智造
                             </h2>
                         </div>
@@ -88,6 +88,8 @@ description: 蘭頓專業代工——OEM／ODM／OBM 戰略合作與保密機制
                     @endforeach
                 </div>
             </section>
+
+            @include('_components.about-pillars')
         </div>
     </div>
 @endsection

@@ -21,13 +21,13 @@ description: 蘭頓人因設計——對應台灣氣候與居住環境的床墊�
                 {{-- 導言／清單共用 12 欄：右欄皆 col-span-7（約 58%），左右對齊 --}}
                 <div class="w-full grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-20 lg:items-center">
                     <div class="lg:col-span-5 flex flex-col gap-6 lg:gap-8 min-w-0">
-                        <div class="flex flex-col gap-3">
-                            <div class="inline-flex items-center gap-3 text-eb2 text-main2 uppercase">
+                        <div class="section-title">
+                            <div class="section-title-eyebrow section-title-eyebrow--upper">
                                 <span aria-hidden="true">/</span>
                                 <span>Designed for Taiwan</span>
                                 <span aria-hidden="true">/</span>
                             </div>
-                            <h2 class="text-ch3 text-gray5">
+                            <h2 class="section-title-heading">
                                 在地氣候 <span class="text-main2">×</span> 舒適支撐
                             </h2>
                         </div>
@@ -89,6 +89,8 @@ description: 蘭頓人因設計——對應台灣氣候與居住環境的床墊�
                     @endforeach
                 </div>
             </section>
+
+            @include('_components.about-pillars')
         </div>
     </div>
 @endsection

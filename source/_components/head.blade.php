@@ -4,7 +4,9 @@
 <title>{{ $page->title ? $page->title . ' | ' . $page->siteName : $page->siteName }}</title>
 <meta name="description" content="{{ $page->description ?? $page->siteDescription }}">
 
-<link rel="icon" type="image/png" href="{{ $page->baseUrl }}/images/favicon.png">
+<link rel="icon" href="{{ $page->baseUrl }}/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ $page->baseUrl }}/images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="{{ $page->baseUrl }}/images/favicon-16.png">
 <link rel="apple-touch-icon" href="{{ $page->baseUrl }}/images/favicon.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">

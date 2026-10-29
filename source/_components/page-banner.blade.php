@@ -18,7 +18,7 @@
         <div class="layout-grid relative z-10 w-full h-full flex flex-col justify-center items-center pb-8 md:pb-10">
             <div class="w-full flex flex-col items-center gap-3">
                 @if (!empty($enTitle))
-                    <h1 class="page-banner-title text-eh2 md:text-eh1 text-white text-center uppercase">
+                    <h1 class="page-banner-title text-white text-center uppercase">
                         {{ $enTitle }}
                     </h1>
                 @elseif (!empty($zhTitle))

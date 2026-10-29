@@ -108,28 +108,31 @@ description: 蘭頓企業合作方式——從需求訪談到檢驗交貨的一�
                 'body' => '從市場需求、產品研發到智慧製造與全球物流，蘭頓提供完整的一站式床墊 OEM／ODM 代工服務。',
             ])
 
-            {{-- 手機橫向錨點 --}}
-            <nav
-                class="lg:hidden -mx-6 md:-mx-12 px-6 md:px-12 sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-gray2 overflow-x-auto"
-                aria-label="床墊代工流程"
-                data-process-nav-mobile
-            >
-                <ul class="flex items-center gap-1 min-w-max py-3">
-                    @foreach ($steps as $step)
-                        <li>
-                            <a
-                                href="#{{ $step['id'] }}"
-                                data-process-link
-                                data-process-id="{{ $step['id'] }}"
-                                class="process-nav-link px-3 py-1.5 text-cb3 whitespace-nowrap"
-                            >
-                                <span class="process-nav-dash" aria-hidden="true"></span>
-                                <span>{{ $step['title'] }}</span>
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
-            </nav>
+            {{-- 手機橫向錨點（translateY 置頂；content-panel overflow 無法用 sticky） --}}
+            <div class="lg:hidden -mx-6 md:-mx-12" data-process-nav-mobile-wrap>
+                <nav
+                    class="process-nav-mobile relative hide-scrollbar z-20 bg-white/95 backdrop-blur-sm overflow-x-auto px-6 md:px-12 will-change-transform"
+                    aria-label="床墊代工流程"
+                    data-process-nav-mobile
+                    data-drag-scroll="free"
+                >
+                    <ul class="flex items-center gap-1 min-w-max py-3">
+                        @foreach ($steps as $step)
+                            <li class="shrink-0" data-drag-scroll-item>
+                                <a
+                                    href="#{{ $step['id'] }}"
+                                    data-process-link
+                                    data-process-id="{{ $step['id'] }}"
+                                    class="process-nav-link px-3 py-1.5 text-cb3 whitespace-nowrap"
+                                >
+                                    <span class="process-nav-dash" aria-hidden="true"></span>
+                                    <span>{{ $step['title'] }}</span>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </nav>
+            </div>
 
             {{-- 左側壁掛與中間計數器：JS translateY（保留 content-panel overflow，banner 效果才正常） --}}
             <div class="w-full flex border-t border-gray1" data-process-rail>
@@ -206,7 +209,7 @@ description: 蘭頓企業合作方式——從需求訪談到檢驗交貨的一�
                                         loading="lazy"
                                     >
                                 </div>
-                                <div class="absolute inset-0 bg-gradient-to-t from-overlay/30 to-transparent pointer-events-none" aria-hidden="true"></div>
+                                <div class="absolute inset-0 bg-overlay/10 pointer-events-none" aria-hidden="true"></div>
                             </div>
                         </article>
                     @endforeach
