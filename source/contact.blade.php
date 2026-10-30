@@ -53,7 +53,7 @@ description: 合作洽詢——開啟全球商機，歡迎提出多元合作或�
                 method="POST"
                 data-netlify="true"
                 data-netlify-honeypot="bot-field"
-                class="w-full max-w-[1000px] p-8 md:p-14 bg-white rounded-[10px] flex flex-col items-center gap-5"
+                class="w-full max-w-[1000px] p-6 md:p-14 bg-white rounded-[10px] flex flex-col items-center gap-5"
                 data-aos="fade-up"
                 novalidate
             >
@@ -205,7 +205,7 @@ description: 合作洽詢——開啟全球商機，歡迎提出多元合作或�
                     >服務條款</a>。
                 </p>
 
-                <button type="submit" class="btn h-12 w-48 justify-between pl-7 pr-6 gap-3">
+                <button type="submit" class="btn h-[50px] text-cb2 w-48 justify-between pl-7 pr-6 gap-3">
                     <span>送出合作提案</span>
                     <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
                 </button>

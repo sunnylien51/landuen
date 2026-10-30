@@ -169,7 +169,7 @@ description: 蘭頓企業合作方式——從需求訪談到檢驗交貨的一�
                                 @endforeach
                             </div>
                         </div>
-                        <span class="text-eb3 text-main3">/ {{ sprintf('%02d', count($steps)) }}</span>
+                        <span class="text-eb3 text-main3">STEP</span>
                     </div>
                 </div>
 

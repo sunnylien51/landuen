@@ -23,6 +23,35 @@ description: 蘭頓床墊材料介紹——布料、泡綿、彈簧、乳膠、�
                 'body' => '從表布、支撐層到黏合工藝，蘭頓整合六大材料系統，為每張床墊打下舒適與耐久的基礎。',
             ])
 
+            {{-- 剖面床：對應六大系統的整體結構示意（與首頁共用素材／動效） --}}
+            <div class="w-full relative flex flex-col items-center" data-aos="fade-up">
+                <div class="relative z-10 w-full max-w-[1200px]" data-mit-stage>
+                    <div
+                        class="mit-watermark pointer-events-none absolute left-1/2 top-[65%] font-display text-[clamp(3rem,12vw,8.2rem)] leading-none tracking-[0.035em] select-none whitespace-nowrap will-change-transform"
+                        data-mit-watermark
+                        aria-hidden="true"
+                    >
+                        MADE IN TAIWAN
+                    </div>
+                    <div class="relative z-10 w-full will-change-transform" data-mit-mattress>
+                        <div class="mit-mattress-float relative w-full" data-mit-float>
+                            <img
+                                src="{{ $page->baseUrl }}/images/mattress.webp"
+                                alt="床墊剖面結構與六大材料系統"
+                                class="block w-full h-auto"
+                            >
+                            <img
+                                src="{{ $page->baseUrl }}/images/mattress_intro.svg"
+                                alt=""
+                                class="mit-intro absolute inset-0 size-full object-contain pointer-events-none"
+                                data-mit-intro
+                                aria-hidden="true"
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             {{-- 手機橫向錨點（translateY 置頂；content-panel overflow 無法用 sticky） --}}
             <div class="lg:hidden -mx-6 md:-mx-12" data-process-nav-mobile-wrap>
                 <nav
@@ -92,19 +121,33 @@ description: 蘭頓床墊材料介紹——布料、泡綿、彈簧、乳膠、�
                         <article
                             id="{{ $system['id'] }}"
                             data-process-step
-                            class="grid grid-cols-1 gap-8 lg:gap-10 py-12 md:py-16 lg:py-24 scroll-mt-24 lg:scroll-mt-10 {{ $i ? 'border-t border-gray1' : '' }}"
+                            class="flex flex-col gap-8 lg:gap-10 py-12 md:py-16 lg:py-24 scroll-mt-24 lg:scroll-mt-10 {{ $i ? 'border-t border-gray1' : '' }}"
                         >
-                            <div class="flex flex-col gap-5 lg:gap-6 max-w-3xl">
-                                <div class="flex items-center gap-4">
-                                    <span class="w-10 h-px bg-main3" aria-hidden="true"></span>
-                                    <span class="text-eb3 text-main3"><span class="lg:hidden">{{ $system['num'] }} · </span>{{ $system['en'] }}</span>
+                            <div class="flex flex-col md:flex-row md:items-center gap-8 lg:gap-12 xl:gap-16">
+                                <div class="flex-1 min-w-0 flex flex-col gap-5 lg:gap-6">
+                                    <div class="flex items-center gap-4">
+                                        <span class="w-10 h-px bg-main3" aria-hidden="true"></span>
+                                        <span class="text-eb3 text-main3"><span class="lg:hidden">{{ $system['num'] }} · </span>{{ $system['en'] }}</span>
+                                    </div>
+                                    <h3 class="text-ch4 min-[1600px]:text-ch3 text-gray5">{{ $system['title'] }}</h3>
+                                    <p class="text-cb2 text-gray4">{{ $system['intro'] }}</p>
                                 </div>
-                                <h3 class="text-ch4 min-[1600px]:text-ch3 text-gray5">{{ $system['title'] }}</h3>
-                                <p class="text-cb2 text-gray4">{{ $system['intro'] }}</p>
+
+                                @if (!empty($system['img']))
+                                    <div class="shrink-0 w-full md:w-60 lg:w-64 xl:w-72 aspect-[4/3.2] overflow-hidden rounded-tl-[130px] rounded-[8px] bg-gray1">
+                                        <img
+                                            src="{{ $page->baseUrl }}/images/{{ $system['img'] }}"
+                                            alt="{{ $system['title'] }}"
+                                            class="size-full object-cover"
+                                            loading="lazy"
+                                            decoding="async"
+                                        >
+                                    </div>
+                                @endif
                             </div>
 
                             @if (!empty($system['items']))
-                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5  overflow-hidden">
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0.5 overflow-hidden">
                                     @foreach ($system['items'] as $item)
                                         <div class="flex flex-col gap-0.5 p-6 bg-bg rounded-2xl lg:rounded-[16px]">
                                             <p class="text-cb1 text-gray5">{{ $item['title'] }}</p>

@@ -5,33 +5,49 @@
     @php
         $homeHeroSlides = $page->homeHeroSlides ?? [];
         $homeHeroTotal = max(count($homeHeroSlides), 1);
+        $homeHeroCopy = $page->homeHeroCopy ?? [];
+        $homeHeroBody = $homeHeroCopy['body'] ?? [];
+        if (is_string($homeHeroBody)) {
+            $homeHeroBody = [$homeHeroBody];
+        }
     @endphp
     <section id="home-hero" class="sticky top-0 z-0 w-full h-[100svh] overflow-hidden" data-home-hero-slider>
         <div id="home-hero-motion" class="absolute inset-0 flex flex-col justify-center items-center will-change-transform">
             <div class="home-hero-slides absolute inset-0 scale-110" aria-hidden="true">
                 @foreach ($homeHeroSlides as $i => $slide)
-                    <img
-                        src="{{ $page->baseUrl }}/images/{{ $slide['src'] }}"
-                        alt="{{ $slide['alt'] ?? '' }}"
-                        class="home-hero-slide absolute inset-0 size-full object-cover object-center {{ $i === 0 ? 'is-active' : '' }}"
+                    <picture
+                        class="home-hero-slide absolute inset-0 block size-full {{ $i === 0 ? 'is-active' : '' }}"
                         data-home-hero-slide
-                        @if ($i === 0) fetchpriority="high" @else loading="lazy" @endif
                     >
+                        @if (!empty($slide['srcMb']))
+                            <source
+                                media="(max-width: 799px)"
+                                srcset="{{ $page->baseUrl }}/images/{{ $slide['srcMb'] }}"
+                            >
+                        @endif
+                        <img
+                            src="{{ $page->baseUrl }}/images/{{ $slide['src'] }}"
+                            alt="{{ $slide['alt'] ?? '' }}"
+                            class="absolute inset-0 size-full object-cover object-center"
+                            @if ($i === 0) fetchpriority="high" @else loading="lazy" @endif
+                        >
+                    </picture>
                 @endforeach
             </div>
             <div class="absolute inset-0 bg-overlay/40 z-[1]" aria-hidden="true"></div>
 
             <div class="layout-grid relative z-10 flex flex-col justify-center items-center gap-6 py-28 lg:py-32">
                 <div class="w-full flex flex-col items-center gap-3 text-center">
-                    <h1 class="text-eh2 lg:text-eh1 text-white tracking-wider">Strategic Partnership</h1>
-                    <p class="text-cb1 md:text-ch5 text-white tracking-widest">以精密智造，承載您的品牌承諾</p>
+                    <h1 class="text-eh2 lg:text-eh1 text-white tracking-wider">{{ $homeHeroCopy['title'] ?? '' }}</h1>
+                    <p class="text-cb1 md:text-ch5 text-white tracking-widest">{{ $homeHeroCopy['subtitle'] ?? '' }}</p>
                 </div>
 
                 <div class="w-px h-14 bg-white/30" aria-hidden="true"></div>
 
                 <p class="w-full max-w-2xl text-center text-cb3 text-white/70">
-                    從前沿結構研發到大規模精準代工，<br class="hidden md:block">
-                    以深厚踏實的智造底蘊，成為您開拓市場最強韌的供應鏈後盾。
+                    @foreach ($homeHeroBody as $lineIndex => $line)
+                        @if ($lineIndex > 0)<br class="hidden md:block">@endif{{ $line }}
+                    @endforeach
                 </p>
             </div>
         </div>
@@ -191,22 +207,19 @@
                     >
                 </div>
 
+                @php
+                    $homeOem = $page->homeOem ?? [];
+                    $oemTracks = $homeOem['tracks'] ?? [];
+                @endphp
                 <div class="layout-grid relative z-10 w-full flex flex-col items-center gap-10 lg:gap-12 pt-[clamp(5rem,12vw,8.5rem)]">
                 @include('_components.page-intro', [
-                    'title' => 'OEM ｜ ODM ｜ OBM 三軌戰略布局',
-                    'body' => '依託 40 年國際大廠服務底蘊與工業 4.0 彈性智造，蘭頓為全球家具品牌、大型連鎖通路與新銳電商，提供高精度、高靈活度的戰略代工與品牌共創方案。',
+                    'title' => $homeOem['title'] ?? '',
+                    'body' => $homeOem['body'] ?? '',
                     'onDark' => true,
                 ])
 
                     <div class="w-full max-w-[1000px] flex flex-col gap-2.5 md:gap-3" data-aos="fade-up" data-aos-delay="120">
-                        @php
-                            $tracks = [
-                                ['icon' => 'factory', 'title' => 'OEM 精準代工', 'desc' => '智能自動化產線與嚴謹 QC 管控，提供大規模產能開發與極致穩定的交期保障。'],
-                                ['icon' => 'pencil-ruler', 'title' => 'ODM 研發設計', 'desc' => '結合前沿人因工學與材料科學，支援少量多樣高精密打樣，加速新概念商品化。'],
-                                ['icon' => 'sparkles', 'title' => 'OBM 品牌共創', 'desc' => '以頂級製床經驗賦能夥伴，從結構規劃到包裝物流，協助快速建立高價值自有睡眠品牌。'],
-                            ];
-                        @endphp
-                        @foreach ($tracks as $track)
+                        @foreach ($oemTracks as $track)
                             {{-- 手機：中等圓角卡片；桌機：膠囊橫列 --}}
                             <div class="w-full px-6 py-5 md:pl-5 md:pr-10 bg-white rounded-2xl md:rounded-full flex flex-col md:flex-row md:items-center gap-2.5 md:gap-4">
                                 <div class="w-full md:w-56 flex items-center gap-3 md:gap-4 shrink-0">
@@ -224,10 +237,24 @@
             </div>
 
             {{-- OEM 大圖：250vh sticky 縮放，0→70% 放大，70→100% 停住後解除 --}}
+            @php
+                $oemZoom = $homeOem['zoom'] ?? [];
+                $oemZoomTitle = $oemZoom['title'] ?? '';
+                $oemZoomBody = $oemZoom['body'] ?? '';
+                if (is_string($oemZoomTitle)) {
+                    $oemZoomTitle = [$oemZoomTitle];
+                }
+                if (is_string($oemZoomBody)) {
+                    $oemZoomBody = [$oemZoomBody];
+                }
+                $oemZoomAlt = $oemZoom['alt'] ?? '';
+                $oemZoomVideo = $oemZoom['video'] ?? 'company_video.mp4';
+                $oemZoomPoster = $oemZoom['poster'] ?? 'video_index.jpg';
+            @endphp
             <section
                 class="oem-zoom relative z-10 w-full"
                 data-oem-zoom
-                aria-label="蘭頓智造場景"
+                aria-label="{{ $oemZoomAlt !== '' ? $oemZoomAlt : '蘭頓智造場景' }}"
             >
                 <div class="oem-zoom__pin sticky top-0 h-[100vh] w-full flex items-center justify-center">
                     {{-- 桌機播影片；手機／平板只顯示封面圖（見 CSS max 1199 + JS） --}}
@@ -235,30 +262,32 @@
                         <video
                             class="oem-zoom__image"
                             data-oem-zoom-image
-                            data-src="{{ $page->baseUrl }}/images/company_video.mp4"
+                            data-src="{{ $page->baseUrl }}/images/{{ $oemZoomVideo }}"
                             muted
                             loop
                             playsinline
                             webkit-playsinline
                             preload="none"
-                            aria-label="蘭頓企業智慧製造與床墊產線"
+                            aria-label="{{ $oemZoomAlt }}"
                         ></video>
                         <img
                             class="oem-zoom__poster"
                             data-oem-zoom-poster
-                            src="{{ $page->baseUrl }}/images/video_index.jpg"
-                            alt="蘭頓企業智慧製造與床墊產線"
+                            src="{{ $page->baseUrl }}/images/{{ $oemZoomPoster }}"
+                            alt="{{ $oemZoomAlt }}"
                             decoding="async"
                         >
                         <div class="oem-zoom__overlay" data-oem-zoom-overlay aria-hidden="true"></div>
                         <div class="oem-zoom__copy">
                             <h3 class="oem-zoom__title text-eh3 md:text-eh2 lg:text-eh1 text-white/90" data-oem-zoom-title>
-                                Made in Taiwan,<br>Built for Your Brand
+                                @foreach ($oemZoomTitle as $lineIndex => $line)
+                                    @if ($lineIndex > 0)<br>@endif{{ $line }}
+                                @endforeach
                             </h3>
                             <p class="oem-zoom__body text-cb1 text-white/80" data-oem-zoom-body>
-                                蘭頓深耕台灣四十載的製床工藝，<br>
-                                從源頭精準優化成本與穩定交期，<br>
-                                以強悍的智造實力，全方位賦能您的專屬品牌。
+                                @foreach ($oemZoomBody as $lineIndex => $line)
+                                    @if ($lineIndex > 0)<br>@endif{{ $line }}
+                                @endforeach
                             </p>
                         </div>
                     </div>
@@ -347,7 +376,15 @@
         </div>
     </section>
 
-    {{-- 戰略夥伴 logo 列（純 logo，點進夥伴頁） --}}
+    {{-- 戰略夥伴 logo 列（與 partners 連動；點進夥伴頁） --}}
+    @php
+        $homePartnersLimit = (int) ($page->homePartnersLimit ?? 18);
+        $homePartners = array_values(array_filter(
+            $page->partners ?? [],
+            fn ($partner) => !empty($partner['showOnHome'])
+        ));
+        $homePartners = array_slice($homePartners, 0, max($homePartnersLimit, 0));
+    @endphp
     <section class="relative w-full" aria-label="戰略夥伴">
         <div class="layout-grid pb-20 lg:pb-[7.5rem] pt-4 lg:pt-8">
             <div
@@ -356,23 +393,23 @@
                 data-aos="fade-up"
             >
                 <div class="home-partners-scroll__track min-w-max flex items-center gap-5 md:gap-6 lg:gap-8" data-drag-scroll-track>
-                    @for ($pi = 1; $pi <= 8; $pi++)
+                    @foreach ($homePartners as $partner)
                         <a
                             href="{{ $page->baseUrl }}/partners/"
                             class="home-partners-scroll__item shrink-0 block w-36 md:w-40 lg:w-[200px] h-16 lg:h-20"
                             data-drag-scroll-item
-                            aria-label="戰略夥伴 {{ $pi }}"
+                            aria-label="{{ $partner['name'] ?? '戰略夥伴' }}"
                         >
                             <img
-                                src="{{ $page->baseUrl }}/images/partner{{ $pi }}.jpg"
-                                alt=""
+                                src="{{ $page->baseUrl }}/images/{{ $partner['img'] }}"
+                                alt="{{ $partner['name'] ?? '' }}"
                                 class="w-full h-full object-contain mix-blend-luminosity pointer-events-none"
                                 loading="lazy"
                                 decoding="async"
                                 draggable="false"
                             >
                         </a>
-                    @endfor
+                    @endforeach
                 </div>
             </div>
         </div>

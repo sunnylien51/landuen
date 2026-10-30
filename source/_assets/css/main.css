@@ -91,7 +91,7 @@
 
   /* main2 線框（淺底） */
   .btn-outline {
-    @apply inline-flex items-center gap-2 px-5 py-3 rounded-full border border-main2 text-main2 font-semibold text-cb3 shadow-[0px_4px_12px_0px_rgba(0,0,0,0.10)] transition-colors duration-300 hover:bg-main2 hover:text-white cursor-pointer;
+    @apply inline-flex items-center gap-2 px-5 h-12 rounded-full border border-main2 text-main2 font-semibold text-cb3 shadow-[0px_4px_12px_0px_rgba(0,0,0,0.10)] transition-colors duration-300 hover:bg-main2 hover:text-white cursor-pointer;
   }
 
   /* 白線框（深色底／圖片上） */
@@ -104,7 +104,7 @@
 
   /* nav 高大 CTA（尺寸／字體特殊，單獨保留） */
   .btn-cta {
-    @apply inline-flex items-center gap-2.5 px-8 h-16 lg:h-20 bg-main2 text-white font-serif font-semibold transition-colors duration-300 hover:bg-main1 cursor-pointer;
+    @apply inline-flex items-center gap-2.5 px-8 h-[56px] lg:h-20 bg-main2 text-white font-serif font-semibold transition-colors duration-300 hover:bg-main1 cursor-pointer;
     font-size: 16px;
     line-height: 1.75;
     letter-spacing: 0.05em;
@@ -919,7 +919,7 @@
     width: 4.75rem;
     height: 4.75rem;
     border-radius: 9999px;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.7);
     box-shadow: 0 8px 24px rgb(12 23 43 / 0.2);
     color: var(--color-main1);
     transform: translate(-50%, -50%);

@@ -1,5 +1,6 @@
 @php
     $isHome = trim($page->getPath(), '/') === '';
+    $footerCta = $page->footerCta ?? [];
 @endphp
 <footer class="w-full relative">
     {{--
@@ -22,8 +23,8 @@
         <div class="absolute inset-x-0 top-[60px] bottom-0 z-10 layout-grid flex flex-col justify-center items-center gap-8">
             <div class="section-title section-title--center section-title--on-dark gap-4" data-aos="fade-up">
                 <div class="page-intro-rule" aria-hidden="true"></div>
-                <h2 class="section-title-heading text-ch4 md:text-ch2">攜手蘭頓，開啟品牌新藍圖</h2>
-                <p class="text-cb2 text-white/80 max-w-2xl">從打樣到全球量產，以 40 年工藝成就您的市場優勢。</p>
+                <h2 class="section-title-heading text-ch4 md:text-ch2">{{ $footerCta['title'] ?? '' }}</h2>
+                <p class="text-cb2 text-white/80 max-w-2xl">{{ $footerCta['body'] ?? '' }}</p>
             </div>
 
             <div
@@ -32,11 +33,11 @@
                 data-aos-delay="100"
             >
                 <a href="{{ $page->baseUrl }}/contact/" class="btn btn--main3 h-12 pl-6 pr-5 justify-between gap-3">
-                    <span>合作洽詢</span>
+                    <span>{{ $footerCta['primaryLabel'] ?? '合作洽詢' }}</span>
                     <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
                 </a>
                 <a href="{{ $page->baseUrl }}/cooperation/" class="btn-outline-light">
-                    <span>合作流程</span>
+                    <span>{{ $footerCta['secondaryLabel'] ?? '合作流程' }}</span>
                     <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
                 </a>
             </div>
@@ -44,9 +45,9 @@
     </div>
 
     <div id="footer-info" class="relative z-10 bg-gray5">
-        <div class="layout-grid py-12 lg:py-14 flex flex-col md:flex-row justify-between items-start md:items-center gap-10">
-            <div class="flex-1 flex flex-col md:flex-row justify-start items-start gap-8 lg:gap-9 w-full min-w-0">
-                <div class="w-full md:w-72 shrink-0 flex flex-col items-start gap-5">
+        <div class="layout-grid py-12 lg:py-14 flex flex-col md:flex-row justify-between items-center gap-10">
+            <div class="flex-1 flex flex-col md:flex-row justify-start items-center md:items-start gap-8 lg:gap-9 w-full min-w-0">
+                <div class="w-full md:w-72 shrink-0 flex flex-col items-center md:items-start gap-5">
                     <a href="{{ $page->baseUrl }}/" class="inline-block">
                         <img
                             src="{{ $page->baseUrl }}/images/logo.svg"
@@ -61,9 +62,9 @@
                     </div>
                 </div>
 
-                <div class="flex-1 flex flex-col items-start gap-0.5 text-cb3 text-main2 min-w-0">
+                <div class="flex-1 flex flex-col items-center md:items-start gap-0.5 text-cb3 text-main2 text-center md:text-left min-w-0">
                     <p>桃園市中壢區龍東路597號</p>
-                    <p class="flex flex-col md:flex-row md:flex-wrap gap-0.5 md:gap-x-4">
+                    <p class="flex flex-col md:flex-row md:flex-wrap items-center md:items-start gap-0.5 md:gap-x-4">
                         <span>E-mail：<a href="mailto:info@qupeng.com" class="hover:text-main2 transition-colors">info@qupeng.com</a></span>
                         <span>TEL：<a href="tel:0229990000" class="hover:text-main2 transition-colors">02-2999-0000</a></span>
                     </p>
@@ -81,7 +82,7 @@
             <button
                 id="back-to-top"
                 type="button"
-                class="btn-outline shrink-0 self-end md:self-center"
+                class="btn-outline shrink-0 self-center"
                 aria-label="返回頁首"
             >
                 <span>TOP</span>
