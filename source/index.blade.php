@@ -152,9 +152,19 @@
                     </div>
                 </div>
 
-                {{-- 四卡片 --}}
+                {{-- 核心支柱卡：showOnHome，最多 4 筆 --}}
+                @php
+                    $homeAboutPillarsLimit = (int) ($page->homeAboutPillarsLimit ?? 4);
+                    $homeAboutPillars = array_values(array_filter(
+                        $page->aboutPillars ?? [],
+                        fn ($card) => !empty($card['showOnHome'])
+                    ));
+                    $homeAboutPillars = array_slice($homeAboutPillars, 0, max($homeAboutPillarsLimit, 0));
+                    $homeAboutCount = count($homeAboutPillars);
+                @endphp
+                @if ($homeAboutCount > 0)
                 <div class="w-full max-w-[1280px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-7 mt-12 lg:mt-16">
-                    @foreach ($page->aboutPillars as $i => $card)
+                    @foreach ($homeAboutPillars as $i => $card)
                         <a
                             href="{{ $page->baseUrl }}{{ $card['href'] }}"
                             class="block"
@@ -170,7 +180,7 @@
                                     </div>
                                     <div class="w-full flex flex-col items-center gap-1 text-center">
                                         <h3 class="text-ch4 text-main1 tracking-widest">{{ $card['title'] }}</h3>
-                                        <p class="text-cb3 text-gray4">{{ $card['desc'] }}</p>
+                                        <p class="text-cb3 text-gray4 line-clamp-1">{{ $card['desc'] }}</p>
                                     </div>
                                 </div>
                                 <div class="relative rounded-tr-[48px] overflow-hidden">
@@ -185,6 +195,7 @@
                         </a>
                     @endforeach
                 </div>
+                @endif
             </div>
         </div>
 
@@ -348,7 +359,7 @@
                             data-alt="{{ $mat['title'] }}"
                             aria-expanded="{{ $i === 0 ? 'true' : 'false' }}"
                         >
-                            <span class="text-eh4 text-main1 shrink-0 pt-0.5" aria-hidden="true">{{ $mat['num'] }}</span>
+                            <span class="text-eh4 text-main1 shrink-0 pt-0.5" aria-hidden="true">{{ sprintf('%02d', $i + 1) }}</span>
                             <span class="flex-1 min-w-0 flex flex-col items-stretch">
                                 <span class="w-full flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
                                     <span class="text-ch5 md:text-ch4 text-main1 tracking-wide">{{ $mat['title'] }}</span>

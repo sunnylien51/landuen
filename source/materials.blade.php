@@ -19,8 +19,8 @@ description: 蘭頓床墊材料介紹——布料、泡綿、彈簧、乳膠、�
 
         <section class="layout-grid layout-grid--fluid inner-page-padding flex flex-col gap-16 lg:gap-24" data-process-flow>
             @include('_components.page-intro', [
-                'title' => '六大材料系統整合',
-                'body' => '從表布、支撐層到黏合工藝，蘭頓整合六大材料系統，為每張床墊打下舒適與耐久的基礎。',
+                'title' => $page->pageIntros['materials']['title'] ?? '',
+                'body' => $page->pageIntros['materials']['body'] ?? '',
             ])
 
             {{-- 剖面床：對應六大系統的整體結構示意（與首頁共用素材／動效） --}}
@@ -107,8 +107,8 @@ description: 蘭頓床墊材料介紹——布料、泡綿、彈簧、乳膠、�
                     <div class="h-fit flex flex-col items-center gap-3 will-change-transform" data-process-counter-wrap>
                         <div class="process-counter font-display text-[72px] text-center leading-none text-gray2">
                             <div class="process-counter-strip" data-process-counter>
-                                @foreach ($systems as $system)
-                                    <div class="h-[1em]">{{ $system['num'] }}</div>
+                                @foreach ($systems as $i => $system)
+                                    <div class="h-[1em]">{{ sprintf('%02d', $i + 1) }}</div>
                                 @endforeach
                             </div>
                         </div>
@@ -127,7 +127,7 @@ description: 蘭頓床墊材料介紹——布料、泡綿、彈簧、乳膠、�
                                 <div class="flex-1 min-w-0 flex flex-col gap-5 lg:gap-6">
                                     <div class="flex items-center gap-4">
                                         <span class="w-10 h-px bg-main3" aria-hidden="true"></span>
-                                        <span class="text-eb3 text-main3"><span class="lg:hidden">{{ $system['num'] }} · </span>{{ $system['en'] }}</span>
+                                        <span class="text-eb3 text-main3"><span class="lg:hidden">{{ sprintf('%02d', $i + 1) }} · </span>{{ $system['en'] }}</span>
                                     </div>
                                     <h3 class="text-ch4 min-[1600px]:text-ch3 text-gray5">{{ $system['title'] }}</h3>
                                     <p class="text-cb2 text-gray4">{{ $system['intro'] }}</p>

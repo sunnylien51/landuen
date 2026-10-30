@@ -1,4 +1,9 @@
-{{-- 深入探索四大核心支柱（資料：$page->aboutPillars） --}}
+{{-- 深入探索更多：與分類連動；不套首頁上下架／上限；固定四欄往下排 --}}
+@php
+    $explorePillars = array_values($page->aboutPillars ?? []);
+    $exploreCount = count($explorePillars);
+@endphp
+@if ($exploreCount > 0)
 <section class="w-full flex flex-col gap-10 lg:gap-12" data-aos="fade-up">
     <div class="section-title section-title--center">
         <div class="section-title-eyebrow section-title-eyebrow--upper">
@@ -6,11 +11,11 @@
             <span>EXPLORE MORE</span>
             <span aria-hidden="true">/</span>
         </div>
-        <h2 class="section-title-heading">深入探索四大核心支柱</h2>
+        <h2 class="section-title-heading">深入探索更多</h2>
     </div>
 
     <div class="w-full max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-7">
-        @foreach ($page->aboutPillars as $i => $card)
+        @foreach ($explorePillars as $i => $card)
             <a
                 href="{{ $page->baseUrl }}{{ $card['href'] }}"
                 class="block"
@@ -25,7 +30,7 @@
                         </div>
                         <div class="w-full flex flex-col items-center gap-1 text-center">
                             <h3 class="text-ch4 text-main1 tracking-widest">{{ $card['title'] }}</h3>
-                            <p class="text-cb3 text-gray4">{{ $card['desc'] }}</p>
+                            <p class="text-cb3 text-gray4 line-clamp-1">{{ $card['desc'] }}</p>
                         </div>
                     </div>
                     <div class="relative rounded-tr-[48px] overflow-hidden">
@@ -41,3 +46,4 @@
         @endforeach
     </div>
 </section>
+@endif

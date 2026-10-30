@@ -522,6 +522,23 @@
   }
 
   /* ================= 床墊知識富文本 ================= */
+  /* 合作流程步驟說明（HTML 一塊；h4＝小標、p＝內文） */
+  .cooperation-step-body {
+    @apply flex flex-col gap-5 max-w-md;
+  }
+
+  .cooperation-step-body > div {
+    @apply flex flex-col gap-1.5;
+  }
+
+  .cooperation-step-body h4 {
+    @apply text-cb2 text-gray5;
+  }
+
+  .cooperation-step-body p {
+    @apply text-cb2 text-gray4;
+  }
+
   .knowledge-richtext {
     @apply flex flex-col;
   }

@@ -24,8 +24,8 @@ description: 合作洽詢——開啟全球商機，歡迎提出多元合作或�
     <div class="content-panel content-panel--bg">
         <section class="layout-grid inner-page-padding flex flex-col items-center gap-12 lg:gap-16">
             @include('_components.page-intro', [
-                'title' => '開啟全球商機',
-                'body' => '歡迎各界公司行號、跨境電商、連鎖飯店、品牌渠道商提出多元合作或戰略採購企劃。請於下方表單提供完整的合作構想，您的資料愈具體，蘭頓 B2B 專業團隊愈能以高效率為您評估最適合的產能排程與客製化解決方案。',
+                'title' => $page->pageIntros['contact']['title'] ?? '',
+                'body' => $page->pageIntros['contact']['body'] ?? '',
             ])
 
             {{-- 送出成功 --}}
