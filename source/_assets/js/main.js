@@ -645,7 +645,7 @@ function initDragScroll() {
 }
 
 /**
- * 首頁六大材料：風琴切換說明與左側圖
+ * 首頁六大材料：風琴切換說明與左側圖（雙層交叉淡入淡出）
  */
 function initHomeMaterials() {
     const root = document.querySelector('[data-home-materials]');
@@ -653,10 +653,71 @@ function initHomeMaterials() {
         return;
     }
 
-    const img = root.querySelector('[data-home-mat-img]');
+    const layers = Array.from(root.querySelectorAll('[data-home-mat-img]'));
     const items = Array.from(root.querySelectorAll('[data-home-mat-item]'));
-    if (!img || !items.length) {
+    if (layers.length < 1 || !items.length) {
         return;
+    }
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let activeLayer = layers.find((img) => img.classList.contains('is-active')) || layers[0];
+    let swapToken = 0;
+
+    if (!activeLayer.classList.contains('is-active')) {
+        activeLayer.classList.add('is-active');
+    }
+
+    function currentSrc() {
+        return activeLayer.getAttribute('src') || '';
+    }
+
+    function whenReady(img, src, done) {
+        if (img.getAttribute('src') === src && img.complete) {
+            done();
+            return;
+        }
+
+        const finish = () => {
+            img.onload = null;
+            img.onerror = null;
+            done();
+        };
+
+        img.onload = finish;
+        img.onerror = finish;
+        img.setAttribute('src', src);
+    }
+
+    function crossfadeTo(nextSrc, nextAlt) {
+        if (!nextSrc || nextSrc === currentSrc()) {
+            activeLayer.setAttribute('alt', nextAlt);
+            return;
+        }
+
+        const token = ++swapToken;
+        const incoming = layers.find((img) => img !== activeLayer) || activeLayer;
+
+        whenReady(incoming, nextSrc, () => {
+            if (token !== swapToken) {
+                return;
+            }
+
+            incoming.setAttribute('alt', nextAlt);
+            incoming.removeAttribute('aria-hidden');
+            activeLayer.setAttribute('aria-hidden', 'true');
+            activeLayer.setAttribute('alt', '');
+
+            if (reduceMotion.matches || incoming === activeLayer) {
+                activeLayer.classList.remove('is-active');
+                incoming.classList.add('is-active');
+                activeLayer = incoming;
+                return;
+            }
+
+            incoming.classList.add('is-active');
+            activeLayer.classList.remove('is-active');
+            activeLayer = incoming;
+        });
     }
 
     function activate(item) {
@@ -666,16 +727,7 @@ function initHomeMaterials() {
             el.setAttribute('aria-expanded', on ? 'true' : 'false');
         });
 
-        const nextSrc = item.getAttribute('data-img');
-        const nextAlt = item.getAttribute('data-alt') || '';
-        if (nextSrc && img.getAttribute('src') !== nextSrc) {
-            img.style.opacity = '0';
-            window.setTimeout(() => {
-                img.setAttribute('src', nextSrc);
-                img.setAttribute('alt', nextAlt);
-                img.style.opacity = '1';
-            }, 180);
-        }
+        crossfadeTo(item.getAttribute('data-img') || '', item.getAttribute('data-alt') || '');
     }
 
     items.forEach((item) => {

@@ -335,17 +335,27 @@
                 data-aos="fade-up"
                 data-aos-delay="80"
             >
-                <div class="relative w-full max-w-sm mx-auto lg:mx-0 lg:max-w-none lg:w-[520px] xl:w-[600px] lg:shrink-0 overflow-hidden aspect-[1/1] about-media-tr bg-gray1">
+                <div class="home-mat-media relative w-full max-w-sm mx-auto lg:mx-0 lg:max-w-none lg:w-[520px] xl:w-[600px] lg:shrink-0 overflow-hidden aspect-[1/1] about-media-tr bg-gray1">
                     <img
                         src="{{ $page->baseUrl }}/images/{{ $homeMatFirst['img'] ?? 'materials1.jpg' }}"
                         alt="{{ $homeMatFirst['title'] ?? '' }}"
-                        class="w-full h-full object-cover transition-opacity duration-500"
+                        class="home-mat-media__img is-active"
                         data-home-mat-img
                         width="400"
                         height="500"
                         decoding="async"
                     >
-                    <div class="absolute inset-0 bg-overlay/10 pointer-events-none" aria-hidden="true"></div>
+                    <img
+                        src="{{ $page->baseUrl }}/images/{{ $homeMatFirst['img'] ?? 'materials1.jpg' }}"
+                        alt=""
+                        class="home-mat-media__img"
+                        data-home-mat-img
+                        width="400"
+                        height="500"
+                        decoding="async"
+                        aria-hidden="true"
+                    >
+                    <div class="absolute inset-0 bg-overlay/10 pointer-events-none z-[1]" aria-hidden="true"></div>
                 </div>
 
                 <div class="w-full lg:flex-1 min-w-0 flex flex-col justify-center" role="list">

@@ -1039,6 +1039,24 @@
     pointer-events: none;
   }
 
+  /* 首頁六大材料：左側圖雙層交叉淡入淡出 */
+  .home-mat-media__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity;
+    pointer-events: none;
+  }
+
+  .home-mat-media__img.is-active {
+    opacity: 1;
+    z-index: 1;
+  }
+
   /* 首頁六大材料：風琴展開 */
   .home-mat-item {
     opacity: 0.55;
@@ -1084,6 +1102,10 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .home-mat-media__img {
+      transition: none;
+    }
+
     .home-mat-item,
     .home-mat-item__panel,
     .home-mat-item__body {
