@@ -822,8 +822,8 @@ function initHomeHeroSlider() {
     prevBtn?.addEventListener('click', () => goTo(index - 1));
     nextBtn?.addEventListener('click', () => goTo(index + 1));
 
-    root.addEventListener('mouseenter', pause);
-    root.addEventListener('mouseleave', resume);
+    // 不對整塊 Hero 做 hover 暫停：滑鼠常停在首屏，會讓自動輪播與進度條一直卡住。
+    // 仍保留鍵盤 focus、切換分頁、減少動態時暫停。
     root.addEventListener('focusin', pause);
     root.addEventListener('focusout', (event) => {
         if (!root.contains(event.relatedTarget)) {
