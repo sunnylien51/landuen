@@ -463,4 +463,19 @@ return [
             ? 'active'
             : '';
     },
+
+    /*
+    | Jigsaw 設定常為 IterableObject；丟進 array_* 前先轉成純陣列。
+    */
+    'asArray' => function ($page, $value) {
+        if (is_null($value)) {
+            return [];
+        }
+
+        if (is_object($value) && method_exists($value, 'toArray')) {
+            $value = $value->toArray();
+        }
+
+        return is_array($value) ? $value : (array) $value;
+    },
 ];

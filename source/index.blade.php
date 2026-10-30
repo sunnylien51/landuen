@@ -156,7 +156,7 @@
                 @php
                     $homeAboutPillarsLimit = (int) ($page->homeAboutPillarsLimit ?? 4);
                     $homeAboutPillars = array_values(array_filter(
-                        $page->aboutPillars ?? [],
+                        $page->asArray($page->aboutPillars),
                         fn ($card) => !empty($card['showOnHome'])
                     ));
                     $homeAboutPillars = array_slice($homeAboutPillars, 0, max($homeAboutPillarsLimit, 0));
@@ -391,7 +391,7 @@
     @php
         $homePartnersLimit = (int) ($page->homePartnersLimit ?? 18);
         $homePartners = array_values(array_filter(
-            $page->partners ?? [],
+            $page->asArray($page->partners),
             fn ($partner) => !empty($partner['showOnHome'])
         ));
         $homePartners = array_slice($homePartners, 0, max($homePartnersLimit, 0));

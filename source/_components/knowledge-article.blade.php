@@ -1,5 +1,5 @@
 @php
-    $knowledgeKeys = array_keys($page->knowledgeArticles ?? []);
+    $knowledgeKeys = array_keys($page->asArray($page->knowledgeArticles));
     $knowledgeIndex = array_search($article['slug'] ?? '', $knowledgeKeys, true);
     $articleNum = sprintf('%02d', $knowledgeIndex === false ? 1 : $knowledgeIndex + 1);
     $articleTitle = $article['title'] ?? '';

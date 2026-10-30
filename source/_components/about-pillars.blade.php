@@ -1,6 +1,6 @@
 {{-- 深入探索更多：與分類連動；不套首頁上下架／上限；固定四欄往下排 --}}
 @php
-    $explorePillars = array_values($page->aboutPillars ?? []);
+    $explorePillars = array_values($page->asArray($page->aboutPillars));
     $exploreCount = count($explorePillars);
 @endphp
 @if ($exploreCount > 0)
