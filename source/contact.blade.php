@@ -19,6 +19,7 @@ description: 合作洽詢——開啟全球商機，歡迎提出多元合作或�
             '品牌聯名',
             '其他',
         ];
+        $contactInfo = $page->asArray($page->contactInfo);
     @endphp
 
     <div class="content-panel content-panel--bg">
@@ -210,6 +211,60 @@ description: 合作洽詢——開啟全球商機，歡迎提出多元合作或�
                     <i data-lucide="arrow-up-right" class="w-4 h-4" aria-hidden="true"></i>
                 </button>
             </form>
+
+            {{-- 聯絡資訊＋地圖：單一白底區塊；桌機左資訊右滿版地圖 --}}
+            <div
+                class="w-full max-w-[1000px] grid grid-cols-1 lg:grid-cols-12 bg-white rounded-[10px] overflow-hidden lg:min-h-[420px]"
+                data-aos="fade-up"
+            >
+                <div class="lg:col-span-5 flex flex-col justify-center gap-10 p-8 md:p-10 lg:p-12">
+                   <h3 class="self-stretch text-ch4 text-main1">與我們聯繫</h3>
+
+                    <ul class="flex flex-col">
+                        @if (!empty($contactInfo['address']))
+                            <li class="flex flex-col gap-1 py-4 border-t border-gray1 first:border-t-0 first:pt-0">
+                                <span class="text-eb3 text-main3 tracking-[0.14em] uppercase">Address</span>
+                                <p class="text-cb2 text-gray5">{{ $contactInfo['address'] }}</p>
+                            </li>
+                        @endif
+                        @if (!empty($contactInfo['tel']))
+                            <li class="flex flex-col gap-1 py-4 border-t border-gray1">
+                                <span class="text-eb3 text-main3 tracking-[0.14em] uppercase">Tel</span>
+                                <a
+                                    href="tel:{{ $contactInfo['telHref'] ?? preg_replace('/\D+/', '', $contactInfo['tel']) }}"
+                                    class="text-cb2 text-gray5 transition-colors duration-300 hover:text-main1"
+                                >{{ $contactInfo['tel'] }}</a>
+                            </li>
+                        @endif
+                        @if (!empty($contactInfo['email']))
+                            <li class="flex flex-col gap-1 py-4 border-t border-gray1 last:pb-0">
+                                <span class="text-eb3 text-main3 tracking-[0.14em] uppercase">Email</span>
+                                <a
+                                    href="mailto:{{ $contactInfo['email'] }}"
+                                    class="text-cb2 text-gray5 break-all transition-colors duration-300 hover:text-main1"
+                                >{{ $contactInfo['email'] }}</a>
+                            </li>
+                        @endif
+                    </ul>
+                </div>
+
+                <div class="relative lg:col-span-7 min-h-[280px] lg:min-h-full bg-gray1">
+                    @if (!empty($contactInfo['mapEmbed']))
+                        <iframe
+                            title="公司位置地圖"
+                            src="{{ $contactInfo['mapEmbed'] }}"
+                            class="absolute inset-0 size-full border-0"
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                            allowfullscreen
+                        ></iframe>
+                    @else
+                        <div class="absolute inset-0 flex items-center justify-center px-6 text-center">
+                            <p class="text-cb2 text-gray4">請於後台貼上 Google 地圖嵌入連結</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
         </section>
     </div>
 @endsection

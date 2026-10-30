@@ -27,7 +27,7 @@
                 <h1 class="text-ch4 lg:text-ch3 lg:leading-[1.5] text-gray5 tracking-widest">{{ $article['title'] }}</h1>
                 <p class="text-cb2 text-gray4 w-full py-5 px-5 md:py-6 md:px-[28px] bg-gray1 rounded-[8px]">{{ $article['excerpt'] }}</p>
                 @if (!empty($article['img']))
-                    <div class="relative w-full aspect-[16/10] md:aspect-[2/1] bg-gray1 overflow-hidden about-media-tl">
+                    <div class="relative w-full aspect-[16/10] md:aspect-[2/1] bg-gray1 overflow-hidden rounded-[8px]">
                         <img
                             src="{{ $page->baseUrl }}/images/{{ $article['img'] }}"
                             alt="{{ $article['title'] }}"

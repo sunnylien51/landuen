@@ -1,6 +1,7 @@
 @php
     $isHome = trim($page->getPath(), '/') === '';
     $footerCta = $page->footerCta ?? [];
+    $contactInfo = $page->asArray($page->contactInfo);
 @endphp
 <footer class="w-full relative">
     {{--
@@ -63,10 +64,16 @@
                 </div>
 
                 <div class="flex-1 flex flex-col items-center md:items-start gap-0.5 text-cb3 text-main2 text-center md:text-left min-w-0">
-                    <p>桃園市中壢區龍東路597號</p>
+                    @if (!empty($contactInfo['address']))
+                        <p>{{ $contactInfo['address'] }}</p>
+                    @endif
                     <p class="flex flex-col md:flex-row md:flex-wrap items-center md:items-start gap-0.5 md:gap-x-4">
-                        <span>E-mail：<a href="mailto:info@qupeng.com" class="hover:text-main2 transition-colors">info@qupeng.com</a></span>
-                        <span>TEL：<a href="tel:0229990000" class="hover:text-main2 transition-colors">02-2999-0000</a></span>
+                        @if (!empty($contactInfo['email']))
+                            <span>E-mail：<a href="mailto:{{ $contactInfo['email'] }}" class="hover:text-main2 transition-colors">{{ $contactInfo['email'] }}</a></span>
+                        @endif
+                        @if (!empty($contactInfo['tel']))
+                            <span>TEL：<a href="tel:{{ $contactInfo['telHref'] ?? preg_replace('/\D+/', '', $contactInfo['tel']) }}" class="hover:text-main2 transition-colors">{{ $contactInfo['tel'] }}</a></span>
+                        @endif
                     </p>
                     <p>© {{ date('Y') }} 蘭頓床墊｜Designed by
                         <a
